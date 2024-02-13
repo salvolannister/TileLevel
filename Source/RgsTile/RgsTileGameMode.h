@@ -51,6 +51,18 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Game)
 	int32 GetClosestRedTileDistance();
 
+	UPROPERTY(EditAnywhere, Category = "Tiles")
+	TSubclassOf<ATile> GreenTile;
+
+	UPROPERTY(EditAnywhere, Category = "Tiles")
+	TSubclassOf<ATile> RedTile;
+
+	UPROPERTY(EditAnywhere, Category = "Tiles")
+	TSubclassOf<ATile> BlueTile;
+
+	UPROPERTY(EditAnywhere, Category = "Tiles")
+	TSubclassOf<ATile> NormalTile;
+
 public:
 
 	// Defines the size of the tile grid to generate.
@@ -62,14 +74,25 @@ public:
 	// Defines the number of Green Tiles to randomly place in the tile grid.
 	// Must be at least 1.
 	// Can be changed in the "TileGameModeBP" blueprint.
-	UPROPERTY(EditDefaultsOnly, Category = Configuration)
+	UPROPERTY(EditDefaultsOnly, Category = Configuration, meta = (ClampMin = "1", UIMin = "1"))
 	int32 GreenTilesToSpawn = 5;
 
 	// Defines the number of Red Tiles to randomly place in the tile grid.
 	// Must be at least 1.
 	// Can be changed in the "TileGameModeBP" blueprint.
-	UPROPERTY(EditDefaultsOnly, Category = Configuration)
+	UPROPERTY(EditDefaultsOnly, Category = Configuration, meta = (ClampMin = "1", UIMin = "1"))
 	int32 RedTilesToSpawn = 5;
+
+private:
+	// Generates the tile grid
+	void SpawnTileGrid();
+
+	std::vector<std::vector<TObjectPtr<ATile>>> TileGrid;
+
+	// Debug function to show colored tiles
+	void ShowColoredTiles();
+
+
 };
 
 

@@ -20,6 +20,34 @@ ARgsTileGameMode::ARgsTileGameMode()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
+
+void ARgsTileGameMode::SpawnTileGrid()
+{
+	// avoids possible multiplication overflow
+	long int GridDim = (long)TileGridSize * TileGridSize;
+
+	if (TileGrid.size() < GridDim)
+	{
+		TileGrid.resize(TileGridSize, std::vector < TObjectPtr<ATile>>(TileGridSize));
+	}
+
+	// Get controller location
+	FVector StartLocation;
+	// Calculate spawning starting location
+	FRotator SpawnRotation;
+
+	for (int x = 0; x < TileGridSize; x++)
+	{
+		for (int y = 0; y < TileGridSize; y++)
+		{
+		
+			FVector SpawnLocation = StartLocation;
+			TileGrid[x][y] = GetWorld()->SpawnActor<ATile>(NormalTile, SpawnLocation, SpawnRotation);
+		}
+	}
+}
+
+
 void ARgsTileGameMode::ResetGame()
 {
 	UGameplayStatics::OpenLevel(this, FName("/Game/Levels/LoadingLevel"));
