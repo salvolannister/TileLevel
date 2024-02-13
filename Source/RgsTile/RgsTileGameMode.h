@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+
 #include "RgsTileGameMode.generated.h"
+
+class ATile;
+
 
 UCLASS(minimalapi)
 class ARgsTileGameMode : public AGameModeBase
@@ -52,16 +56,16 @@ public:
 	int32 GetClosestRedTileDistance();
 
 	UPROPERTY(EditAnywhere, Category = "Tiles")
-	TSubclassOf<ATile> GreenTile;
+	TSubclassOf<ATile> GreenTileBP;
 
 	UPROPERTY(EditAnywhere, Category = "Tiles")
-	TSubclassOf<ATile> RedTile;
+	TSubclassOf<ATile> RedTileBP;
 
 	UPROPERTY(EditAnywhere, Category = "Tiles")
-	TSubclassOf<ATile> BlueTile;
+	TSubclassOf<ATile> BlueTileBP;
 
 	UPROPERTY(EditAnywhere, Category = "Tiles")
-	TSubclassOf<ATile> NormalTile;
+	TSubclassOf<ATile> NormalTileBP;
 
 public:
 
