@@ -91,7 +91,8 @@ private:
 	// Generates the tile grid
 	void SpawnTileGrid();
 
-	std::vector<std::vector<TObjectPtr<ATile>>> TileGrid;
+
+	TArray<TArray<TObjectPtr<ATile>>> TileGrid;
 
 	// Debug function to show colored tiles
 	void ShowColoredTiles();

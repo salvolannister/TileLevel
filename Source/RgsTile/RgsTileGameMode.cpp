@@ -65,13 +65,15 @@ int32 ARgsTileGameMode::GetClosestRedTileDistance()
 void ARgsTileGameMode::SpawnTileGrid()
 {
 	// avoids possible multiplication overflow
-	long int GridDim = (long)TileGridSize * TileGridSize;
+	if(TileGrid.Num() > 0  && TileGrid[0].Num() > 0)
+		return;
 
-	if (TileGrid.size() < GridDim)
+	TileGrid.SetNum(TileGridSize);
+	for (int32 i = 0; i < TileGridSize; ++i)
 	{
-		TileGrid.resize(TileGridSize, std::vector < TObjectPtr<ATile>>(TileGridSize));
+		TileGrid[i].SetNumZeroed(TileGridSize);
 	}
-
+	
 	// Get controller location
 	FVector StartLocation;
 	// Calculate spawning starting location
@@ -84,7 +86,7 @@ void ARgsTileGameMode::SpawnTileGrid()
 
 			FVector SpawnLocation = StartLocation;
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, SpawnRotation);
-			//TileGrid[x][y] = 
+			TileGrid[x][y] = Tile;
 		}
 	}
 }
@@ -99,6 +101,7 @@ void ARgsTileGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	//TODO: implementation
+	SpawnTileGrid();
 }
 
 void ARgsTileGameMode::Tick(float DeltaTime)
