@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
 
+
 UENUM()
 enum class ETileType : uint8
 {
@@ -14,6 +15,7 @@ enum class ETileType : uint8
 	Red
 };
 
+class UTextRenderComponent;
 
 // Simple implementation of the Tile class.
 // It consist in a platform sized 2m x 2m x 1m.
@@ -43,6 +45,9 @@ public:
 	// Method to call to notify when the player steps off this tile.
 	void StepOff();
 
+	// Writes the coordinates x and y on the corresponding tile
+	void SetRenderText(const int x, const int y);
+
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Visual, meta = (AllowPrivateAccess = "true"))
@@ -52,4 +57,11 @@ protected:
 
 	UPROPERTY(Transient)
 	ETileType TileType = ETileType::Normal;
+
+	// Property used for debugging purposes
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Visual, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UTextRenderComponent> TileCoordinateText;
+
+
+	
 };

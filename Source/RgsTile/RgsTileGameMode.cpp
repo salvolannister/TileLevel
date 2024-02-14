@@ -104,6 +104,7 @@ void ARgsTileGameMode::SpawnTileGrid()
 				0.f) * SectorSize * 1.f + StartLocation;
 			SpawnLocation.Z = -(StartLocation.Z - PlayerPawn->BaseEyeHeight / 2.f) + 16.f;
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, SpawnRotation);
+			Tile->SetRenderText(x, y);
 			TileGrid[x][y] = Tile;
 		}
 	}
