@@ -78,13 +78,17 @@ void ARgsTileGameMode::SpawnTileGrid()
 	FVector StartLocation;
 	// Calculate spawning starting location
 	FRotator SpawnRotation;
+	float constexpr SectorSize = 200.f;
 
 	for (int x = 0; x < TileGridSize; x++)
 	{
 		for (int y = 0; y < TileGridSize; y++)
 		{
 
-			FVector SpawnLocation = StartLocation;
+			FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(TileGridSize), 
+				static_cast<float>(y) - static_cast<float>(TileGridSize),
+				0.f) * SectorSize * 1.f + StartLocation;
+
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, SpawnRotation);
 			TileGrid[x][y] = Tile;
 		}
