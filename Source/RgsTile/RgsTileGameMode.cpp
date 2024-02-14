@@ -74,8 +74,20 @@ void ARgsTileGameMode::SpawnTileGrid()
 		TileGrid[i].SetNumZeroed(TileGridSize);
 	}
 	
-	// Get controller location
-	FVector StartLocation;
+
+	const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	if (!PlayerController)
+		return;
+	
+	const APawn* PlayerPawn = PlayerController->GetPawn();
+
+	if (!PlayerPawn)
+		return;
+	
+	FVector PlayerLocation = PlayerPawn->GetActorLocation();
+	
+	FVector StartLocation = PlayerLocation;
 	// Calculate spawning starting location
 	FRotator SpawnRotation;
 	float constexpr SectorSize = 200.f;
@@ -87,8 +99,8 @@ void ARgsTileGameMode::SpawnTileGrid()
 
 			FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(TileGridSize), 
 				static_cast<float>(y) - static_cast<float>(TileGridSize),
-				0.f) * SectorSize * 1.f + StartLocation;
-
+				0.f) * SectorSize * 1.f - StartLocation;
+			SpawnLocation.Z = -(StartLocation.Z - PlayerPawn->BaseEyeHeight / 2.f) + 16.f;
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, SpawnRotation);
 			TileGrid[x][y] = Tile;
 		}
