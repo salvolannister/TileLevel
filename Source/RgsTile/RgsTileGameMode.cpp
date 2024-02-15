@@ -114,9 +114,69 @@ void ARgsTileGameMode::ShowColoredTiles()
 
 void ARgsTileGameMode::SpawnGreenTiles()
 {					   
-					   
+	if (TileGrid.Num() == 0 || TileGrid[0].Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Tile grid is not initialized!"));
+		return;
+	}
+
+	for (int32 i = GreenTilesToSpawn; i > 0; i--)
+	{
+		int32 x = FMath::RandRange(0, TileGridSize - 1);
+		int32 y = FMath::RandRange(0, TileGridSize - 1);
+
+
+		if (TileGrid[x][y]->GetType() == ETileType::Normal && IsGreenTileReachable(x, y))
+		{
+			ATile* TmpTile = TileGrid[x][y];
+			TmpTile->Destroy();
+			FVector SpawnLocation = GetTileLocation(x, y);
+			ATile* Tile = GetWorld()->SpawnActor<ATile>(GreenTileBP, SpawnLocation, FRotator::ZeroRotator);
+			TileGrid[x][y] = Tile;
+		}
+		else
+		{
+			i++;
+		}
+	}
 }					   
-					   
+
+bool ARgsTileGameMode::IsGreenTileReachable(const int32 x, const int32 y) const
+{
+	// Looks if there is at least one safe Tile that can lead to the green tile
+    int32 SafeTileNumber = 0;
+
+	for (int32 w = x - 1; w < x + 2; w++)
+	{
+		if(w < 0) w++;
+		if(w > TileGridSize) break;
+
+		for (int32 h = y - 1; h < h + 2; h++)
+		{
+			if(h < 0)
+			{
+				h++;
+				continue;
+			}
+			else if(h > TileGridSize)
+			{
+				break;
+			}
+
+			if(w == x && h == y) continue;
+
+			if (TileGrid[w][h]->GetType() != ETileType::Red)
+			{
+				SafeTileNumber++;
+				break;
+			}
+		}
+	}
+
+	return SafeTileNumber > 0;
+}
+
+
 void ARgsTileGameMode::SpawnRedTiles()
 {
 	if (TileGrid.Num() == 0 || TileGrid[0].Num() == 0)
@@ -124,16 +184,6 @@ void ARgsTileGameMode::SpawnRedTiles()
 		UE_LOG(LogTemp, Error, TEXT("Tile grid is not initialized!"));
 		return;
 	}
-
-	const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-
-	if (!PlayerController)
-		return;
-
-	const APawn* PlayerPawn = PlayerController->GetPawn();
-
-	if (!PlayerPawn)
-		return;
 
 	for (int32 i = RedTilesToSpawn; i > 0; i--)
 	{
@@ -176,15 +226,19 @@ void ARgsTileGameMode::BeginPlay()
 	TilesGridOffset.Y += (TileGridSize - TileGridSizeOffset) * 100.f;
 	TilesGridOffset.Z = -(TilesGridOffset.Z - PlayerPawn->BaseEyeHeight / 2.f) + 16.f;
 	
-	//TODO: implementation
 	SpawnTileGrid();
+	
+	//TODO: implementation
 }
 
 void ARgsTileGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//TODO: implementation
+	// Has Player Moved ? 
+		// Check if it is in a tile
+		// if it is turn on the tile
+
 }
 
 
