@@ -148,8 +148,8 @@ bool ARgsTileGameMode::IsGreenTileReachable(const int32 x, const int32 y) const
 
 	for (int32 w = x - 1; w < x + 2; w++)
 	{
+		if(w >= TileGridSize) break;
 		if(w < 0) w++;
-		if(w > TileGridSize) break;
 
 		for (int32 h = y - 1; h < h + 2; h++)
 		{
@@ -158,7 +158,7 @@ bool ARgsTileGameMode::IsGreenTileReachable(const int32 x, const int32 y) const
 				h++;
 				continue;
 			}
-			else if(h > TileGridSize)
+			else if(h >= TileGridSize)
 			{
 				break;
 			}
