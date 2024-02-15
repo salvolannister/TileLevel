@@ -50,14 +50,13 @@ int32 ARgsTileGameMode::GetRedTilesFound()
 
 int32 ARgsTileGameMode::GetClosestGreenTileDistance()
 {
-	//TODO: implementation
-	return -1;
+
+	return GetClosestTileDistance(CurrentPlayerTile->TilePosX, CurrentPlayerTile->TilePosY, GreenTilesArray);
 }
 
 int32 ARgsTileGameMode::GetClosestRedTileDistance()
 {
-	//TODO: implementation
-	return -1;
+	return GetClosestTileDistance(CurrentPlayerTile->TilePosX, CurrentPlayerTile->TilePosY, RedTilesArray);
 }
 
 void ARgsTileGameMode::SpawnTileGrid()
@@ -71,8 +70,6 @@ void ARgsTileGameMode::SpawnTileGrid()
 		TileGrid[i].SetNumZeroed(TileGridSize);
 	}
 		
-	
-
 	// Add red tiles
 	
 	SpawnRedTiles();
@@ -334,11 +331,40 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 	
 }
 
-ATile* ARgsTileGameMode::GetClosestGreenTileDistance(const int32 PosX, const int32 PosY, TArray<TObjectPtr<ATile>>& Tiles)
+int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, TArray<TObjectPtr<ATile>>& Tiles) const
 {
+	/* To determine the minimum, we consider the maximum distance module between the distances in the x and y directions.
+	 * This ensures that an element on the diagonal e.g. (x + 1, y + 1) of the current coordinates(x, y) is equidistant 
+	 * from one on the sides e.g. (x + 1, y).
+	 */
+
+	if (Tiles.Num() == 0)
+		return -1;
+
 	int32 MinDistanceFound = TileGridSize;
 
-	return nullptr;
+	for (const ATile* TilePtr : Tiles)
+	{
+		if (TilePtr && !TilePtr->HasBeenVisited())
+		{
+			int32 DistanceOnX = FMath::Abs(x - TilePtr->TilePosX);
+			int32 DistanceOnY = FMath::Abs( y - TilePtr->TilePosY);
+
+			int32 NumTileToReachPos = FMath::Max(DistanceOnX, DistanceOnY);
+
+			if (MinDistanceFound > NumTileToReachPos)
+			{
+				MinDistanceFound = NumTileToReachPos;
+				if (MinDistanceFound == 1)
+				{
+					// stop looking since the minimum possible distance was found
+					break;
+				}
+			}
+		}
+	}
+
+	return MinDistanceFound;
 }
 
 

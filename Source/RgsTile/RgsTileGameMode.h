@@ -112,8 +112,9 @@ private:
 	// Given a position in 3D space gives the corresponding associated tile (if there is any)
 	ATile* GetTileFromPosition(FVector Position) const;
 
-	// Given an array of tiles finds the closest Tile to the coordinates PosX PosY that has not still been visited
-	ATile* ARgsTileGameMode::GetClosestGreenTileDistance(const int32 PosX, const int32 PosY, TArray<TObjectPtr<ATile>>& Tiles)
+	// Finds the minimum distance in number of tiles to visit in order to reach one of the Tiles still not visited 
+	// from a Tile with coordinate of cell x and y
+	int32 GetClosestTileDistance(const int32 x, const int32 y, TArray<TObjectPtr<ATile>>& Tiles) const;
 
 	FVector TilesGridOffset;
 
