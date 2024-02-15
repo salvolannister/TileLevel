@@ -7,16 +7,19 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 - reset game after about 5 seconds ARgsTileGameMode::ResetGame()
 - implement all the method from ARgsTileGameMode
 - The game should be reset immediately if the player falls off the platform
-- Use C++ inheritance to handle ATiles
-- Add tile that turns Red
-- Add tile that turns Green
-- Add tile that turns gray
 - Add tile that turns blu
-- Generate grid reading input from TileGameModeBP
-- handle trigger interactions with ATile classes
 - there should be some BP rules that constrain red tile to be a certain number that doesn't prevent player win (there is no path for the player to win)
 
 # Currently working on
 
-- Adding red tiles using similar methods https://www.youtube.com/watch?v=uqylRabVUTo
+- Handle interactions with ATile classes
 - Adding green tiles using some rules
+
+# Done
+
+- Adding red tiles using similar methods https://www.youtube.com/watch?v=uqylRabVUTo
+- Add tile that turns Red
+- Add tile that turns Green
+- Add tile that turns Silver
+- Use C++ inheritance to handle ATiles
+- Generate grid reading input from TileGameModeBP
