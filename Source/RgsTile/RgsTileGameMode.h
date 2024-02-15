@@ -120,6 +120,11 @@ private:
 	int32 GreenTilesFound = 0;
 
 	int32 RedTilesFound = 0;
+
+	TArray<TObjectPtr<ATile>> GreenTilesArray;
+
+	TArray<TObjectPtr<ATile>> RedTilesArray;
+
 };
 
 

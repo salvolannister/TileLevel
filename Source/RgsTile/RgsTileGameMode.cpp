@@ -123,6 +123,12 @@ void ARgsTileGameMode::SpawnGreenTiles()
 		return;
 	}
 
+	if (GreenTilesArray.Num() == 0)
+	{
+		GreenTilesArray.SetNum(GreenTilesToSpawn);
+	}
+
+
 	for (int32 i = GreenTilesToSpawn; i > 0; i--)
 	{
 		int32 x = FMath::RandRange(0, TileGridSize - 1);
@@ -135,6 +141,7 @@ void ARgsTileGameMode::SpawnGreenTiles()
 			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(GreenTileBP, SpawnLocation, FRotator::ZeroRotator);
 			TileGrid[x][y] = Tile;
+			GreenTilesArray.Add(Tile);
 
 			Tile->SetRenderText(x, y);
 		}
@@ -147,7 +154,7 @@ void ARgsTileGameMode::SpawnGreenTiles()
 
 bool ARgsTileGameMode::IsGreenTileReachable(const int32 x, const int32 y) const
 {
-	// Looks if there is at least one safe Tile that can lead to the green tile
+	// Looks if there is at least one safe Tile that can lead to the green Tile
     int32 SafeTileNumber = 0;
 
 	for (int32 w = x - 1; w < x + 2; w++)
@@ -189,6 +196,11 @@ void ARgsTileGameMode::SpawnRedTiles()
 		return;
 	}
 
+	if (RedTilesArray.Num() == 0)
+	{
+		RedTilesArray.SetNum(RedTilesToSpawn);
+	}
+
 	for (int32 i = RedTilesToSpawn; i > 0; i--)
 	{
 	   int32 x = FMath::RandRange(0, TileGridSize - 1);
@@ -201,6 +213,7 @@ void ARgsTileGameMode::SpawnRedTiles()
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(RedTileBP, SpawnLocation, FRotator::ZeroRotator);
 			TileGrid[x][y] = Tile;
 			Tile->SetRenderText(x, y);
+			RedTilesArray.Add(Tile);
 	   }
 	   else
 	   {

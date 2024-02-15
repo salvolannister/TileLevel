@@ -72,6 +72,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Visual, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UTextRenderComponent> TileCoordinateText;
 
-
+	
 	
 };
