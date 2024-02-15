@@ -8,9 +8,10 @@ void ARedTile::StepOn()
 {
 	ATile::StepOn();
 
-	if (bIsVisited)
+	if (bVisited)
 		return;
 	
+	bVisited = true;
 	MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Red));
 	MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 1.0f);
 	
@@ -27,4 +28,6 @@ void ARedTile::BeginPlay()
 	Super::BeginPlay();
 
 	TileType =  ETileType::Red;
+
+	bVisited = false;
 }

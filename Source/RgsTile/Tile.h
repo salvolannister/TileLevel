@@ -32,7 +32,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	//Tells if the tile was already visited or not
-	bool bIsVisited = false;
+	bool bVisited = false;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
@@ -54,6 +54,10 @@ public:
 
 	// Debug: Show tile effect
     void ShowTileEffect(bool bShowEffect);
+
+	//Tells if the player visited or not the tile
+	virtual bool HasBeenVisited();
+
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Visual, meta = (AllowPrivateAccess = "true"))

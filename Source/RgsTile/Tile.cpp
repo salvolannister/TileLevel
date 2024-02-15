@@ -37,7 +37,7 @@ void ATile::BeginPlay()
 	MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Silver));
 	MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 0.0f);
 
-	bIsVisited = false;
+	bVisited = false;
 }
 
 
@@ -85,4 +85,9 @@ void ATile::ShowTileEffect(bool bShowEffect)
 	{
 		StepOff();
 	}
+}
+
+bool ATile::HasBeenVisited()
+{
+	return bVisited;
 }

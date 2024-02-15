@@ -7,9 +7,10 @@ void AGreenTile::StepOn()
 {
 	Super::StepOn();
 
-	if (bIsVisited)
+	if (bVisited)
 		return;
 
+	bVisited = true;
 	MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Green));
 	MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 1.0f);
 
@@ -26,4 +27,5 @@ void AGreenTile::BeginPlay()
 	Super::BeginPlay();
 
 	TileType = ETileType::Green;
+	bVisited = false;
 }

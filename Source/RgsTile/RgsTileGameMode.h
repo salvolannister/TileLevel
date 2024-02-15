@@ -116,6 +116,10 @@ private:
 	FVector TilesGridOffset;
 
 	TObjectPtr<ATile> CurrentPlayerTile;
+
+	int32 GreenTilesFound = 0;
+
+	int32 RedTilesFound = 0;
 };
 
 

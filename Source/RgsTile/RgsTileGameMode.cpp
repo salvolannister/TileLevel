@@ -30,26 +30,22 @@ void ARgsTileGameMode::ResetGame()
 
 int32 ARgsTileGameMode::GetTotalGreenTiles()
 {
-	//TODO: implementation
-	return -1;
+	return GreenTilesToSpawn;
 }
 
 int32 ARgsTileGameMode::GetGreenTilesFound()
 {
-	//TODO: implementation
-	return -1;
+	return GreenTilesFound;
 }
 
 int32 ARgsTileGameMode::GetTotalRedTiles()
 {
-	//TODO: implementation
-	return -1;
+	return RedTilesToSpawn;
 }
 
 int32 ARgsTileGameMode::GetRedTilesFound()
 {
-	//TODO: implementation
-	return -1;
+	return RedTilesFound;
 }
 
 int32 ARgsTileGameMode::GetClosestGreenTileDistance()
@@ -237,6 +233,9 @@ void ARgsTileGameMode::BeginPlay()
 	
 	CurrentPlayerTile = GetTileFromPosition(PlayerPawn->GetActorLocation());
 	//TODO: implementation
+
+	GreenTilesFound = RedTilesFound = 0;
+
 }
 
 void ARgsTileGameMode::Tick(float DeltaTime)
@@ -250,8 +249,21 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 	if (T && CurrentPlayerTile && T != CurrentPlayerTile)
 	{
 		CurrentPlayerTile->StepOff();
-		T->StepOn();
 		CurrentPlayerTile = T;
+
+		if (CurrentPlayerTile->IsA(RedTileBP) && !CurrentPlayerTile->HasBeenVisited())
+		{
+			RedTilesFound++;
+			RedTilesFound = FMath::Clamp(RedTilesFound, 0, RedTilesToSpawn);
+
+		}
+		else if (CurrentPlayerTile->IsA(GreenTileBP) && !CurrentPlayerTile->HasBeenVisited())
+		{
+			GreenTilesFound++;
+			GreenTilesFound = FMath::Clamp(GreenTilesFound, 0, GreenTilesToSpawn);
+		}
+
+		CurrentPlayerTile->StepOn();
 	}
 	
 }
