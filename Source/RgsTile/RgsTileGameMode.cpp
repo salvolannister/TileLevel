@@ -75,16 +75,7 @@ void ARgsTileGameMode::SpawnTileGrid()
 		TileGrid[i].SetNumZeroed(TileGridSize);
 	}
 		
-	for (int32 x = 0; x < TileGridSize; x++)
-	{
-		for (int32 y = 0; y < TileGridSize; y++)
-		{
-			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
-			ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, FRotator::ZeroRotator);
-			Tile->SetRenderText(x, y);
-			TileGrid[x][y] = Tile;
-		}
-	}
+	
 
 	// Add red tiles
 	
@@ -95,6 +86,22 @@ void ARgsTileGameMode::SpawnTileGrid()
 	SpawnGreenTiles();
 	
 	// Add blue tiles
+
+	// spawn normal tiles
+	for (int32 x = 0; x < TileGridSize; x++)
+	{
+		for (int32 y = 0; y < TileGridSize; y++)
+		{
+			if (TileGrid[x][y] == nullptr)
+			{
+				FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
+				ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, FRotator::ZeroRotator);
+				Tile->SetRenderText(x, y);
+				TileGrid[x][y] = Tile;
+
+			}
+		}
+	}
 
 	// Show tiles for debugging
 	ShowColoredTiles();
@@ -126,13 +133,14 @@ void ARgsTileGameMode::SpawnGreenTiles()
 		int32 y = FMath::RandRange(0, TileGridSize - 1);
 
 
-		if (TileGrid[x][y]->GetType() == ETileType::Normal && IsGreenTileReachable(x, y))
+		if ( TileGrid[x][y] == nullptr && IsGreenTileReachable(x, y))
 		{
-			ATile* TmpTile = TileGrid[x][y];
-			TmpTile->Destroy();
+		
 			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(GreenTileBP, SpawnLocation, FRotator::ZeroRotator);
 			TileGrid[x][y] = Tile;
+
+			Tile->SetRenderText(x, y);
 		}
 		else
 		{
@@ -165,7 +173,7 @@ bool ARgsTileGameMode::IsGreenTileReachable(const int32 x, const int32 y) const
 
 			if(w == x && h == y) continue;
 
-			if (TileGrid[w][h]->GetType() != ETileType::Red)
+			if (TileGrid[w][h] == nullptr || TileGrid[w][h]->GetType() != ETileType::Red)
 			{
 				SafeTileNumber++;
 				break;
@@ -191,13 +199,12 @@ void ARgsTileGameMode::SpawnRedTiles()
 	   int32 y = FMath::RandRange(0, TileGridSize - 1);
 
 	  
-	   if (TileGrid[x][y]->GetType() == ETileType::Normal)
+	   if (TileGrid[x][y] == nullptr)
 	   {
-			ATile* TmpTile = TileGrid[x][y];
-			TmpTile->Destroy();
 			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(RedTileBP, SpawnLocation, FRotator::ZeroRotator);
 			TileGrid[x][y] = Tile;
+			Tile->SetRenderText(x, y);
 	   }
 	   else
 	   {
