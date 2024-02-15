@@ -110,7 +110,8 @@ private:
 
 	FVector Get3DSpaceTileLocation(const int32 x, const int32 y);
 
-	//ATile* GetTileFromPosition()
+	// Given a position in 3D space gives the corresponding associated tile (if there is any)
+	ATile* GetTileFromPosition(FVector Position) const;
 
 	FVector TilesGridOffset;
 };

@@ -104,7 +104,7 @@ void ARgsTileGameMode::SpawnTileGrid()
 	}
 
 	// Show tiles for debugging
-	ShowColoredTiles();
+	//ShowColoredTiles();
 }
 
 
@@ -133,7 +133,7 @@ void ARgsTileGameMode::SpawnGreenTiles()
 		int32 y = FMath::RandRange(0, TileGridSize - 1);
 
 
-		if ( TileGrid[x][y] == nullptr && IsGreenTileReachable(x, y))
+		if (TileGrid[x][y] == nullptr && IsGreenTileReachable(x, y))
 		{
 		
 			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
@@ -245,7 +245,11 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 	// Has Player Moved ? 
 		// Check if it is in a tile
 		// if it is turn on the tile
-
+	ATile* T = GetTileFromPosition(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
+	if (T)
+	{
+		T->StepOn();
+	}
 }
 
 
@@ -256,3 +260,40 @@ FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y)
 		0.f) * SectorSize * 1.f + TilesGridOffset;
 	return SpawnLocation;
 }
+
+
+ATile* ARgsTileGameMode::GetTileFromPosition(FVector Position) const
+{
+	FVector TmpPosition = (Position - TilesGridOffset) / SectorSize + TileGridSize;
+	int32 x = static_cast<int32>(floor(TmpPosition.X));
+	int32 y = static_cast<int32>(floor(TmpPosition.Y));
+
+	FString DebugMessage;
+
+	if (x < 0 || x >= TileGridSize || y < 0 || y >= TileGridSize)
+	{
+		
+		DebugMessage = FString::Printf(TEXT("Found x %d, y %d which is not in the screen"), x, y);
+
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, DebugMessage, false);
+		}
+		return nullptr;
+	}
+	else
+	{
+		DebugMessage = FString::Printf(TEXT("Player on grid x %d, y %d "), x, y);
+
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, DebugMessage, false);
+		}
+
+	}
+
+	return TileGrid[x][y];
+
+}
+
+
