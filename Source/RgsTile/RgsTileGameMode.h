@@ -108,7 +108,9 @@ private:
 	bool IsGreenTileReachable(const int32 x, const int32 y) const;
 
 
-	FVector GetTileLocation(const int32 x, const int32 y);
+	FVector Get3DSpaceTileLocation(const int32 x, const int32 y);
+
+	//ATile* GetTileFromPosition()
 
 	FVector TilesGridOffset;
 };

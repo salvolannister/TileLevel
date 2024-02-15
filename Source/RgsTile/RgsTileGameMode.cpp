@@ -79,7 +79,7 @@ void ARgsTileGameMode::SpawnTileGrid()
 	{
 		for (int32 y = 0; y < TileGridSize; y++)
 		{
-			FVector SpawnLocation = GetTileLocation(x, y);
+			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, FRotator::ZeroRotator);
 			Tile->SetRenderText(x, y);
 			TileGrid[x][y] = Tile;
@@ -130,7 +130,7 @@ void ARgsTileGameMode::SpawnGreenTiles()
 		{
 			ATile* TmpTile = TileGrid[x][y];
 			TmpTile->Destroy();
-			FVector SpawnLocation = GetTileLocation(x, y);
+			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(GreenTileBP, SpawnLocation, FRotator::ZeroRotator);
 			TileGrid[x][y] = Tile;
 		}
@@ -195,7 +195,7 @@ void ARgsTileGameMode::SpawnRedTiles()
 	   {
 			ATile* TmpTile = TileGrid[x][y];
 			TmpTile->Destroy();
-			FVector SpawnLocation = GetTileLocation(x, y);
+			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(RedTileBP, SpawnLocation, FRotator::ZeroRotator);
 			TileGrid[x][y] = Tile;
 	   }
@@ -242,7 +242,7 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 }
 
 
-FVector ARgsTileGameMode::GetTileLocation(const int32 x, const int32 y)
+FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y)
 {
 	FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(TileGridSize),
 		static_cast<float>(y) - static_cast<float>(TileGridSize),
