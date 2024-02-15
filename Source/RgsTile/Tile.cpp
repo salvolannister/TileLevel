@@ -36,6 +36,8 @@ void ATile::BeginPlay()
 	
 	MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Silver));
 	MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 0.0f);
+
+	bIsVisited = false;
 }
 
 
@@ -56,28 +58,12 @@ ETileType ATile::GetType() const
 
 void ATile::StepOn()
 {
-	FColor ColorToSet = FColor::Silver;
-	switch (TileType)
-	{
-	case ETileType::Normal:
-		ColorToSet = FColor::Silver; break;
-	case ETileType::Green:
-		ColorToSet = FColor::Green; break;
-	case ETileType::Red:
-		ColorToSet = FColor::Red; break;
-	}
 
-	MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(ColorToSet));
-	MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 1.0f);
 }
 
 void ATile::StepOff()
 {
-	if (TileType == ETileType::Normal)
-	{
-		MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Silver));
-		MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 0.0f);
-	}
+	
 }
 
 

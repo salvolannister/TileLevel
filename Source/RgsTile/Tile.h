@@ -12,7 +12,8 @@ enum class ETileType : uint8
 {
 	Normal,
 	Green,
-	Red
+	Red,
+	Blue
 };
 
 class UTextRenderComponent;
@@ -30,6 +31,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	//Tells if the tile was already visited or not
+	bool bIsVisited = false;
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 
@@ -40,16 +44,16 @@ public:
 	ETileType GetType() const;
 
 	// Method to call to notify when the player steps on this tile.
-	void StepOn();
+	virtual void StepOn();
 
 	// Method to call to notify when the player steps off this tile.
-	void StepOff();
+	virtual void StepOff();
 
 	// Debug: Writes the coordinates x and y on the corresponding tile
 	void SetRenderText(const int32 x, const int32 y);
 
 	// Debug: Show tile effect
-	void ShowTileEffect(bool bShowEffect);
+    void ShowTileEffect(bool bShowEffect);
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Visual, meta = (AllowPrivateAccess = "true"))
