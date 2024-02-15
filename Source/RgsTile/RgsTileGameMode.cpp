@@ -92,9 +92,10 @@ void ARgsTileGameMode::SpawnTileGrid()
 			{
 				FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
 				ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, FRotator::ZeroRotator);
-				Tile->SetRenderText(x, y);
 				TileGrid[x][y] = Tile;
+				Tile->StoreTileGridPosition(x, y);
 
+				Tile->SetRenderText(x, y);
 			}
 		}
 	}
@@ -102,7 +103,6 @@ void ARgsTileGameMode::SpawnTileGrid()
 	// Show tiles for debugging
 	//ShowColoredTiles();
 }
-
 
 void ARgsTileGameMode::ShowColoredTiles()
 {
@@ -142,6 +142,7 @@ void ARgsTileGameMode::SpawnGreenTiles()
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(GreenTileBP, SpawnLocation, FRotator::ZeroRotator);
 			TileGrid[x][y] = Tile;
 			GreenTilesArray.Add(Tile);
+			Tile->StoreTileGridPosition(x, y);
 
 			Tile->SetRenderText(x, y);
 		}
@@ -187,7 +188,6 @@ bool ARgsTileGameMode::IsGreenTileReachable(const int32 x, const int32 y) const
 	return SafeTileNumber > 0;
 }
 
-
 void ARgsTileGameMode::SpawnRedTiles()
 {
 	if (TileGrid.Num() == 0 || TileGrid[0].Num() == 0)
@@ -212,14 +212,67 @@ void ARgsTileGameMode::SpawnRedTiles()
 			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(RedTileBP, SpawnLocation, FRotator::ZeroRotator);
 			TileGrid[x][y] = Tile;
-			Tile->SetRenderText(x, y);
 			RedTilesArray.Add(Tile);
+			
+			Tile->StoreTileGridPosition(x, y);
+			Tile->SetRenderText(x, y);
+
 	   }
 	   else
 	   {
 		   i++;
 	   }
 	}
+}
+
+FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y)
+{
+	FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(TileGridSize),
+		static_cast<float>(y) - static_cast<float>(TileGridSize),
+		0.f) * SectorSize * 1.f + TilesGridOffset;
+	return SpawnLocation;
+}
+
+ATile* ARgsTileGameMode::GetTileFromPosition(FVector Position) const
+{
+	FVector TmpPosition = (Position - TilesGridOffset) / SectorSize + TileGridSize;
+	int32 x = static_cast<int32>(roundf(TmpPosition.X));
+	int32 y = static_cast<int32>(roundf(TmpPosition.Y));
+
+	FString DebugMessage;
+	if (GEngine)
+	{
+		DebugMessage = FString::Printf(TEXT("PlayerPos is x %.2f, y %.2f"), Position.X, Position.Y);
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, DebugMessage, false);
+		DebugMessage = FString::Printf(TEXT("TmpPosition: x %.2f, y %.2f "), TmpPosition.X, TmpPosition.Y);
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, DebugMessage, false);
+
+	}
+
+	if (x < 0 || x >= TileGridSize || y < 0 || y >= TileGridSize)
+	{
+		
+		DebugMessage = FString::Printf(TEXT("Found x %d, y %d which is not in the screen"), x, y);
+
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, DebugMessage, false);
+		}
+		return nullptr;
+	}
+	else
+	{
+		DebugMessage = FString::Printf(TEXT("Player on grid x %d, y %d "), x, y);
+
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, DebugMessage, false);
+		}
+
+	}
+
+	return TileGrid[x][y];
+
 }
 
 void ARgsTileGameMode::BeginPlay()
@@ -281,56 +334,13 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 	
 }
 
-
-FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y)
+ATile* ARgsTileGameMode::GetClosestGreenTileDistance(const int32 PosX, const int32 PosY, TArray<TObjectPtr<ATile>>& Tiles)
 {
-	FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(TileGridSize),
-		static_cast<float>(y) - static_cast<float>(TileGridSize),
-		0.f) * SectorSize * 1.f + TilesGridOffset;
-	return SpawnLocation;
+	int32 MinDistanceFound = TileGridSize;
+
+	return nullptr;
 }
 
 
-ATile* ARgsTileGameMode::GetTileFromPosition(FVector Position) const
-{
-	FVector TmpPosition = (Position - TilesGridOffset) / SectorSize + TileGridSize;
-	int32 x = static_cast<int32>(roundf(TmpPosition.X));
-	int32 y = static_cast<int32>(roundf(TmpPosition.Y));
-
-	FString DebugMessage;
-	if (GEngine)
-	{
-		DebugMessage = FString::Printf(TEXT("PlayerPos is x %.2f, y %.2f"), Position.X, Position.Y);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, DebugMessage, false);
-		DebugMessage = FString::Printf(TEXT("TmpPosition: x %.2f, y %.2f "), TmpPosition.X, TmpPosition.Y);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, DebugMessage, false);
-
-	}
-
-	if (x < 0 || x >= TileGridSize || y < 0 || y >= TileGridSize)
-	{
-		
-		DebugMessage = FString::Printf(TEXT("Found x %d, y %d which is not in the screen"), x, y);
-
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, DebugMessage, false);
-		}
-		return nullptr;
-	}
-	else
-	{
-		DebugMessage = FString::Printf(TEXT("Player on grid x %d, y %d "), x, y);
-
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, DebugMessage, false);
-		}
-
-	}
-
-	return TileGrid[x][y];
-
-}
 
 

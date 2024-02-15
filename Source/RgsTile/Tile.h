@@ -29,10 +29,8 @@ public:
 	ATile();
 
 protected:
-	virtual void BeginPlay() override;
 
-	//Tells if the tile was already visited or not
-	bool bVisited = false;
+	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
@@ -56,12 +54,20 @@ public:
     void ShowTileEffect(bool bShowEffect);
 
 	//Tells if the player visited or not the tile
-	virtual bool HasBeenVisited();
+	virtual bool HasBeenVisited() const;
 
+	void StoreTileGridPosition(const int32 x, const int32 y);
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Visual, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* MeshComponent;
+
+	// X position of the tile inside the grid
+	UPROPERTY(VisibleAnywhere)
+	int32 TilePosX;
+	// Y position of the tile inside the grid
+	UPROPERTY(VisibleAnywhere)
+	int32 TilePosY;
 
 protected:
 
@@ -72,6 +78,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Visual, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UTextRenderComponent> TileCoordinateText;
 
+	//Tells if the tile was already visited or not
+	bool bVisited = false;
 	
-	
+
 };

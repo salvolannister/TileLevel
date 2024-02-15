@@ -107,11 +107,13 @@ private:
 	// Checks if a green tile has at least one tile that is not read in it's neighborhood
 	bool IsGreenTileReachable(const int32 x, const int32 y) const;
 
-
 	FVector Get3DSpaceTileLocation(const int32 x, const int32 y);
 
 	// Given a position in 3D space gives the corresponding associated tile (if there is any)
 	ATile* GetTileFromPosition(FVector Position) const;
+
+	// Given an array of tiles finds the closest Tile to the coordinates PosX PosY that has not still been visited
+	ATile* ARgsTileGameMode::GetClosestGreenTileDistance(const int32 PosX, const int32 PosY, TArray<TObjectPtr<ATile>>& Tiles)
 
 	FVector TilesGridOffset;
 

@@ -38,6 +38,7 @@ void ATile::BeginPlay()
 	MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 0.0f);
 
 	bVisited = false;
+	TilePosX = TilePosY = -1;
 }
 
 
@@ -87,7 +88,14 @@ void ATile::ShowTileEffect(bool bShowEffect)
 	}
 }
 
-bool ATile::HasBeenVisited()
+bool ATile::HasBeenVisited() const
 {
 	return bVisited;
+}
+
+
+void ATile::StoreTileGridPosition(const int32 x, const int32 y)
+{
+	TilePosX = x;
+	TilePosY = y;
 }
