@@ -114,6 +114,8 @@ private:
 	ATile* GetTileFromPosition(FVector Position) const;
 
 	FVector TilesGridOffset;
+
+	TObjectPtr<ATile> CurrentPlayerTile;
 };
 
 

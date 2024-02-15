@@ -235,6 +235,7 @@ void ARgsTileGameMode::BeginPlay()
 	
 	SpawnTileGrid();
 	
+	CurrentPlayerTile = GetTileFromPosition(PlayerPawn->GetActorLocation());
 	//TODO: implementation
 }
 
@@ -246,10 +247,13 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 		// Check if it is in a tile
 		// if it is turn on the tile
 	ATile* T = GetTileFromPosition(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
-	if (T)
+	if (T && CurrentPlayerTile && T != CurrentPlayerTile)
 	{
+		CurrentPlayerTile->StepOff();
 		T->StepOn();
+		CurrentPlayerTile = T;
 	}
+	
 }
 
 
@@ -265,10 +269,18 @@ FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y)
 ATile* ARgsTileGameMode::GetTileFromPosition(FVector Position) const
 {
 	FVector TmpPosition = (Position - TilesGridOffset) / SectorSize + TileGridSize;
-	int32 x = static_cast<int32>(floor(TmpPosition.X));
-	int32 y = static_cast<int32>(floor(TmpPosition.Y));
+	int32 x = static_cast<int32>(roundf(TmpPosition.X));
+	int32 y = static_cast<int32>(roundf(TmpPosition.Y));
 
 	FString DebugMessage;
+	if (GEngine)
+	{
+		DebugMessage = FString::Printf(TEXT("PlayerPos is x %.2f, y %.2f"), Position.X, Position.Y);
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, DebugMessage, false);
+		DebugMessage = FString::Printf(TEXT("TmpPosition: x %.2f, y %.2f "), TmpPosition.X, TmpPosition.Y);
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, DebugMessage, false);
+
+	}
 
 	if (x < 0 || x >= TileGridSize || y < 0 || y >= TileGridSize)
 	{
@@ -277,7 +289,7 @@ ATile* ARgsTileGameMode::GetTileFromPosition(FVector Position) const
 
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, DebugMessage, false);
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, DebugMessage, false);
 		}
 		return nullptr;
 	}
@@ -287,7 +299,7 @@ ATile* ARgsTileGameMode::GetTileFromPosition(FVector Position) const
 
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, DebugMessage, false);
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, DebugMessage, false);
 		}
 
 	}
