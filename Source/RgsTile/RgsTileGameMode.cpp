@@ -1,12 +1,14 @@
 // Copyright(c) Forge Reply. All Rights Reserved.
 
 #include "RgsTileGameMode.h"
-#include "RgsTileCharacter.h"
-#include "UObject/ConstructorHelpers.h"
-#include "Tile.h"
-#include "Kismet/GameplayStatics.h"
-#include "TileHUD.h"
 
+#include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
+#include "Math/UnrealMathUtility.h"
+
+#include "RgsTileCharacter.h"
+#include "Tile.h"
+#include "TileHUD.h"
 
 ARgsTileGameMode::ARgsTileGameMode()
 {
@@ -64,7 +66,6 @@ int32 ARgsTileGameMode::GetClosestRedTileDistance()
 
 void ARgsTileGameMode::SpawnTileGrid()
 {
-	// avoids possible multiplication overflow
 	if(TileGrid.Num() > 0  && TileGrid[0].Num() > 0)
 		return;
 
@@ -73,52 +74,108 @@ void ARgsTileGameMode::SpawnTileGrid()
 	{
 		TileGrid[i].SetNumZeroed(TileGridSize);
 	}
+		
+	for (int32 x = 0; x < TileGridSize; x++)
+	{
+		for (int32 y = 0; y < TileGridSize; y++)
+		{
+			FVector SpawnLocation = GetTileLocation(x, y);
+			ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, FRotator::ZeroRotator);
+			Tile->SetRenderText(x, y);
+			TileGrid[x][y] = Tile;
+		}
+	}
+
+	// Add red tiles
 	
+	SpawnRedTiles();
+
+	// Add green tiles
+
+	SpawnGreenTiles();
+	
+	// Add blue tiles
+
+	// Show tiles for debugging
+	ShowColoredTiles();
+}
+
+
+void ARgsTileGameMode::ShowColoredTiles()
+{
+	for (int i = 0; i < TileGridSize; i++)
+	{
+		for (int ii = 0; ii < TileGridSize; ii++)
+		{
+			TileGrid[i][ii]->ShowTileEffect(true);
+		}
+	}
+}
+
+void ARgsTileGameMode::SpawnGreenTiles()
+{					   
+					   
+}					   
+					   
+void ARgsTileGameMode::SpawnRedTiles()
+{
+	if (TileGrid.Num() == 0 || TileGrid[0].Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Tile grid is not initialized!"));
+		return;
+	}
 
 	const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 
 	if (!PlayerController)
 		return;
-	
+
 	const APawn* PlayerPawn = PlayerController->GetPawn();
 
 	if (!PlayerPawn)
 		return;
-	
-	FVector PlayerLocation = PlayerPawn->GetActorLocation();
-	
-	FVector StartLocation = PlayerLocation;
-	// Calculate spawning starting location
-	FRotator SpawnRotation;
-	float constexpr SectorSize = 200.f;
-	int StartLocationOffset = TileGridSize % 2 == 0 ? 0 : 1;
-	StartLocation.X += (TileGridSize - StartLocationOffset)*100.f;
-	StartLocation.Y += (TileGridSize - StartLocationOffset)*100.f;
 
-	for (int x = 0; x < TileGridSize; x++)
+	for (int32 i = RedTilesToSpawn; i > 0; i--)
 	{
-		for (int y = 0; y < TileGridSize; y++)
-		{
-			FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(TileGridSize), 
-				static_cast<float>(y) - static_cast<float>(TileGridSize),
-				0.f) * SectorSize * 1.f + StartLocation;
-			SpawnLocation.Z = -(StartLocation.Z - PlayerPawn->BaseEyeHeight / 2.f) + 16.f;
-			ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, SpawnRotation);
-			Tile->SetRenderText(x, y);
+	   int32 x = FMath::RandRange(0, TileGridSize - 1);
+	   int32 y = FMath::RandRange(0, TileGridSize - 1);
+
+	  
+	   if (TileGrid[x][y]->GetType() == ETileType::Normal)
+	   {
+			ATile* TmpTile = TileGrid[x][y];
+			TmpTile->Destroy();
+			FVector SpawnLocation = GetTileLocation(x, y);
+			ATile* Tile = GetWorld()->SpawnActor<ATile>(RedTileBP, SpawnLocation, FRotator::ZeroRotator);
 			TileGrid[x][y] = Tile;
-		}
+	   }
+	   else
+	   {
+		   i++;
+	   }
 	}
-}
-
-void ARgsTileGameMode::ShowColoredTiles()
-{
-
 }
 
 void ARgsTileGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	if (!PlayerController)
+		return;
+
+	const APawn* PlayerPawn = PlayerController->GetPawn();
+
+	if (!PlayerPawn)
+		return;
+
+	TilesGridOffset = PlayerPawn->GetActorLocation();
+	int TileGridSizeOffset = TileGridSize % 2 == 0 ? 0 : 1;
+	TilesGridOffset.X += (TileGridSize - TileGridSizeOffset) * 100.f;
+	TilesGridOffset.Y += (TileGridSize - TileGridSizeOffset) * 100.f;
+	TilesGridOffset.Z = -(TilesGridOffset.Z - PlayerPawn->BaseEyeHeight / 2.f) + 16.f;
+	
 	//TODO: implementation
 	SpawnTileGrid();
 }
@@ -130,3 +187,11 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 	//TODO: implementation
 }
 
+
+FVector ARgsTileGameMode::GetTileLocation(const int32 x, const int32 y)
+{
+	FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(TileGridSize),
+		static_cast<float>(y) - static_cast<float>(TileGridSize),
+		0.f) * SectorSize * 1.f + TilesGridOffset;
+	return SpawnLocation;
+}

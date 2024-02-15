@@ -81,7 +81,22 @@ void ATile::StepOff()
 }
 
 
-void ATile::SetRenderText(const int x, const int y)
+void ATile::SetRenderText(const int32 x, const int32 y)
 {
-	TileCoordinateText->SetText(FText::Format(NSLOCTEXT("Coordinates","Coordinates","(X:{0}, Y:{1})"), FText::AsNumber(x), FText::AsNumber(y)));
+	TileCoordinateText->SetText(FText::Format(NSLOCTEXT("Coordinates","Coordinates","(X:{0}, Y:{1})"), 
+								FText::AsNumber(x),
+								FText::AsNumber(y))
+	);
+}
+
+void ATile::ShowTileEffect(bool bShowEffect)
+{
+	if (bShowEffect)
+	{
+		StepOn();
+	}
+	else
+	{
+		StepOff();
+	}
 }

@@ -45,9 +45,11 @@ public:
 	// Method to call to notify when the player steps off this tile.
 	void StepOff();
 
-	// Writes the coordinates x and y on the corresponding tile
-	void SetRenderText(const int x, const int y);
+	// Debug: Writes the coordinates x and y on the corresponding tile
+	void SetRenderText(const int32 x, const int32 y);
 
+	// Debug: Show tile effect
+	void ShowTileEffect(bool bShowEffect);
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Visual, meta = (AllowPrivateAccess = "true"))
@@ -55,7 +57,7 @@ public:
 
 protected:
 
-	UPROPERTY(Transient)
+	UPROPERTY(EditAnywhere)
 	ETileType TileType = ETileType::Normal;
 
 	// Property used for debugging purposes

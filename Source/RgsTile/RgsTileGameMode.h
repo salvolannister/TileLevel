@@ -87,17 +87,26 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Configuration, meta = (ClampMin = "1", UIMin = "1"))
 	int32 RedTilesToSpawn = 5;
 
+	// Dimension of the tile
+	UPROPERTY(EditDefaultsOnly, Category = Configuration)
+	float SectorSize = 200.f;
+
 private:
 	// Generates the tile grid
 	void SpawnTileGrid();
-
 
 	TArray<TArray<TObjectPtr<ATile>>> TileGrid;
 
 	// Debug function to show colored tiles
 	void ShowColoredTiles();
 
+	void SpawnRedTiles();
 
+	void SpawnGreenTiles();
+
+	FVector GetTileLocation(const int32 x, const int32 y);
+
+	FVector TilesGridOffset;
 };
 
 
