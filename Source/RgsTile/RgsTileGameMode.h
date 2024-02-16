@@ -110,11 +110,18 @@ private:
 	FVector Get3DSpaceTileLocation(const int32 x, const int32 y);
 
 	// Given a position in 3D space gives the corresponding associated tile (if there is any)
-	ATile* GetTileFromPosition(FVector Position) const;
+	ATile* GetTileFromPosition(const FVector& Position) const;
+
+	// Given a position in 3D space gives the corresponding associated tile coordinates (x, y) 
+	// it could give also coordinates outside the grid 
+	FVector2D GetCoordinatesFromPosition(const FVector& Position) const;
 
 	// Finds the minimum distance in number of tiles to visit in order to reach one of the Tiles still not visited 
 	// from a Tile with coordinate of cell x and y
-	int32 GetClosestTileDistance(const int32 x, const int32 y, TArray<TObjectPtr<ATile>>& Tiles) const;
+	int32 GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& Tiles) const;
+
+	// Tells if the coordinate (x, y) are the one from the player start position tile
+	bool IsNotStartTile(int32 x, int32 y) const;
 
 	FVector TilesGridOffset;
 
@@ -128,6 +135,8 @@ private:
 
 	TArray<TObjectPtr<ATile>> RedTilesArray;
 
+	// Used to avoid setting a blue, red, or green coordinate in that position
+	FVector2D StartTileCoordinates;
 };
 
 

@@ -69,7 +69,8 @@ void ARgsTileGameMode::SpawnTileGrid()
 	{
 		TileGrid[i].SetNumZeroed(TileGridSize);
 	}
-		
+	
+
 	// Add red tiles
 	
 	SpawnRedTiles();
@@ -132,7 +133,7 @@ void ARgsTileGameMode::SpawnGreenTiles()
 		int32 y = FMath::RandRange(0, TileGridSize - 1);
 
 
-		if (TileGrid[x][y] == nullptr && IsGreenTileReachable(x, y))
+		if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y) && IsGreenTileReachable(x, y))
 		{
 		
 			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
@@ -204,7 +205,7 @@ void ARgsTileGameMode::SpawnRedTiles()
 	   int32 y = FMath::RandRange(0, TileGridSize - 1);
 
 	  
-	   if (TileGrid[x][y] == nullptr)
+	   if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y))
 	   {
 			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
 			ATile* Tile = GetWorld()->SpawnActor<ATile>(RedTileBP, SpawnLocation, FRotator::ZeroRotator);
@@ -215,7 +216,7 @@ void ARgsTileGameMode::SpawnRedTiles()
 			Tile->SetRenderText(x, y);
 
 	   }
-	   else
+	   else 
 	   {
 		   i++;
 	   }
@@ -230,11 +231,11 @@ FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y)
 	return SpawnLocation;
 }
 
-ATile* ARgsTileGameMode::GetTileFromPosition(FVector Position) const
+ATile* ARgsTileGameMode::GetTileFromPosition(const FVector& Position) const
 {
-	FVector TmpPosition = (Position - TilesGridOffset) / SectorSize + TileGridSize;
-	int32 x = static_cast<int32>(roundf(TmpPosition.X));
-	int32 y = static_cast<int32>(roundf(TmpPosition.Y));
+	FVector2D TmpPosition = GetCoordinatesFromPosition(Position);
+	int32 x = FMath::RoundToInt(TmpPosition.X);
+	int32 y = FMath::RoundToInt(TmpPosition.Y);
 
 	FString DebugMessage;
 	if (GEngine)
@@ -272,6 +273,12 @@ ATile* ARgsTileGameMode::GetTileFromPosition(FVector Position) const
 
 }
 
+FVector2D ARgsTileGameMode::GetCoordinatesFromPosition(const FVector& Position) const
+{
+	FVector TmpPosition = (Position - TilesGridOffset) / SectorSize + TileGridSize;
+	return FVector2D(FMath::RoundToInt(TmpPosition.X), FMath::RoundToInt(TmpPosition.Y));
+}
+
 void ARgsTileGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -288,26 +295,25 @@ void ARgsTileGameMode::BeginPlay()
 
 	TilesGridOffset = PlayerPawn->GetActorLocation();
 	int TileGridSizeOffset = TileGridSize % 2 == 0 ? 0 : 1;
-	TilesGridOffset.X += (TileGridSize - TileGridSizeOffset) * 100.f;
-	TilesGridOffset.Y += (TileGridSize - TileGridSizeOffset) * 100.f;
+	TilesGridOffset.X += (TileGridSize + TileGridSizeOffset) * 100.f;
+	TilesGridOffset.Y += (TileGridSize + TileGridSizeOffset) * 100.f;
 	TilesGridOffset.Z = -(TilesGridOffset.Z - PlayerPawn->BaseEyeHeight / 2.f) + 16.f;
 	
+	StartTileCoordinates = GetCoordinatesFromPosition(PlayerPawn->GetActorLocation());
+
 	SpawnTileGrid();
 	
 	CurrentPlayerTile = GetTileFromPosition(PlayerPawn->GetActorLocation());
-	//TODO: implementation
 
 	GreenTilesFound = RedTilesFound = 0;
 
+	//TODO: implementation
 }
 
 void ARgsTileGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Has Player Moved ? 
-		// Check if it is in a tile
-		// if it is turn on the tile
 	ATile* T = GetTileFromPosition(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
 	if (T && CurrentPlayerTile && T != CurrentPlayerTile)
 	{
@@ -331,7 +337,7 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 	
 }
 
-int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, TArray<TObjectPtr<ATile>>& Tiles) const
+int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& Tiles) const
 {
 	/* To determine the minimum, we consider the maximum distance module between the distances in the x and y directions.
 	 * This ensures that an element on the diagonal e.g. (x + 1, y + 1) of the current coordinates(x, y) is equidistant 
@@ -367,6 +373,16 @@ int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, TAr
 	return MinDistanceFound;
 }
 
+bool ARgsTileGameMode::IsNotStartTile(int32 x, int32 y) const
+{
+	
+	if (x != StartTileCoordinates.X || y != StartTileCoordinates.Y)
+		return true;
+	else
+		return false;
 
+
+
+}
 
 
