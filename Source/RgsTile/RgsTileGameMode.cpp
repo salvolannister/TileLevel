@@ -324,15 +324,29 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 		{
 			RedTilesFound++;
 			RedTilesFound = FMath::Clamp(RedTilesFound, 0, RedTilesToSpawn);
-
+			if (RedTilesFound == RedTilesToSpawn)
+			{
+				EndGame(false);
+			}
 		}
 		else if (CurrentPlayerTile->IsA(GreenTileBP) && !CurrentPlayerTile->HasBeenVisited())
 		{
 			GreenTilesFound++;
 			GreenTilesFound = FMath::Clamp(GreenTilesFound, 0, GreenTilesToSpawn);
+
+			if (GreenTilesFound == GreenTilesToSpawn)
+			{
+				EndGame(true);
+			}
 		}
 
 		CurrentPlayerTile->StepOn();
+	}
+
+	// Player out of grid
+	if (T == nullptr)
+	{
+		EndGame(false, true);
 	}
 	
 }
@@ -385,4 +399,19 @@ bool ARgsTileGameMode::IsNotStartTile(int32 x, int32 y) const
 
 }
 
+void ARgsTileGameMode::EndGame(bool bIsWin, bool bForceRestart)
+{
+	if (bIsWin)
+	{
+		// Show game over win panel
+	}
+	else if (bForceRestart)
+	{
+		ResetGame();
+	}
+	else
+	{
+		// Show game over screen and restart after 5 seconds
+	}
+}
 

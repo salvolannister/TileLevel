@@ -123,6 +123,8 @@ private:
 	// Tells if the coordinate (x, y) are the one from the player start position tile
 	bool IsNotStartTile(int32 x, int32 y) const;
 
+	void EndGame(bool bIsWin, bool bForceRestart = false);
+
 	FVector TilesGridOffset;
 
 	TObjectPtr<ATile> CurrentPlayerTile;
