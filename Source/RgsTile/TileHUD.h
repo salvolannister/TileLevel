@@ -3,11 +3,13 @@
 #pragma once
 
 #include "GameFramework/HUD.h"
+#include "RgsTileGameMode.h"
 
 #include "TileHUD.generated.h"
 
+class UEndScreenWidget;
 
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class RGSTILE_API ATileHUD : public AHUD
 {
 	GENERATED_BODY()
@@ -15,9 +17,18 @@ class RGSTILE_API ATileHUD : public AHUD
 public:
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widget Classes")
-	TSubclassOf<UUserWidget> EndScreenClass;
-
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
 	void ShowEndScreen();
+
+	UFUNCTION(BlueprintCallable, Category = "HUD")
+	void ShowEndScreenEvent(bool bIsWin, bool bForceRestart);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UEndScreenWidget> EndScreenWidget;
+
+	virtual void BeginPlay() override;
+	
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+
 };
