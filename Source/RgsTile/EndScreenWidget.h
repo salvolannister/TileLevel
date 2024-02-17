@@ -1,12 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright(c) Forge Reply. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+
 #include "EndScreenWidget.generated.h"
 
 class UTextBlock;
+class UText;
 
 /**
  * 
@@ -18,11 +20,17 @@ class RGSTILE_API UEndScreenWidget : public UUserWidget
 
 public:
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText WinningText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText LoosingText;
+
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidget))
-	TObjectPtr<UTextBlock> GreenCollectedTilesText;
+	TObjectPtr<UTextBlock> GreenResultText;
 	
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidget))
-	TObjectPtr<UTextBlock> RedCollectedTilesText;
+	TObjectPtr<UTextBlock> RedResultText;
 	
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidget))
 	TObjectPtr<UTextBlock> EndGameText;
@@ -30,9 +38,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> Animation_PanelPopUp;
 
-	UPROPERTY(BlueprintCallable)
-	void OpenEndScreen(int32 GreenTilesCollected, int32 RedTilesCollected, bool bIsWin);
+	//UPROPERTY(BlueprintCallable)
+	void OpenEndScreen(bool bIsWin);
 	
-	UPROPERTY(BlueprintCallable)
+	//UPROPERTY(BlueprintCallable)
 	void CloseEndScreen();
 };
