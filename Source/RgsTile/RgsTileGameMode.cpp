@@ -401,6 +401,16 @@ bool ARgsTileGameMode::IsNotStartTile(int32 x, int32 y) const
 
 void ARgsTileGameMode::EndGame(bool bIsWin, bool bForceRestart)
 {
+	if (OnEndGameDelegate.IsBound())
+	{
+		OnEndGameDelegate.Broadcast(bIsWin, bForceRestart);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No subscribers to OnEndGameDelegate"));
+	}
+	
+
 	if (bIsWin)
 	{
 		// Show game over win panel

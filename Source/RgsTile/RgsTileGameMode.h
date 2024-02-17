@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "GameFramework/Actor.h"
 
 #include "RgsTileGameMode.generated.h"
 
@@ -16,6 +17,7 @@ class ARgsTileGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+	
 	ARgsTileGameMode();
 
 	virtual void BeginPlay() override;
@@ -24,6 +26,8 @@ public:
 
 	// Resets the game, by forcing the reload of the game level.
 	void ResetGame();
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTEndGameMulticastDelegate, bool, bIsWin, bool, bForceRestart);
 
 	// Returns the total number of Green Tiles in the tile grid.
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Game)
@@ -66,6 +70,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Tiles")
 	TSubclassOf<ATile> NormalTileBP;
+
+	/** Delegate used for subscribing from other classes to get notified when the game ends */
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Game|Event")
+	FTEndGameMulticastDelegate OnEndGameDelegate;
 
 public:
 
