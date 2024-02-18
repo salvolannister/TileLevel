@@ -59,19 +59,23 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Game)
 	int32 GetClosestRedTileDistance();
 
+	/** The blueprint class to be instantiated for the green tile. Set this in the game mode blueprint	*/
 	UPROPERTY(EditAnywhere, Category = "Tiles")
 	TSubclassOf<ATile> GreenTileBP;
 
+	/** The blueprint class to be instantiated for the red tile. Set this in the game mode blueprint */
 	UPROPERTY(EditAnywhere, Category = "Tiles")
 	TSubclassOf<ATile> RedTileBP;
 
+	/** The blueprint class to be instantiated for the blue tile. Set this in the game mode blueprint */
 	UPROPERTY(EditAnywhere, Category = "Tiles")
 	TSubclassOf<ATile> BlueTileBP;
 
+	/** The blueprint class to be instantiated for the normal tile. Set this in the game mode blueprint */
 	UPROPERTY(EditAnywhere, Category = "Tiles")
 	TSubclassOf<ATile> NormalTileBP;
 
-	/** Delegate used for subscribing from other classes to get notified when the game ends */
+	/** Delegate used for subscribing to notifications when the game ends. */
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Game|Event")
 	FTEndGameMulticastDelegate OnEndGameDelegate;
 
@@ -103,6 +107,7 @@ private:
 	// Generates the tile grid
 	void SpawnTileGrid();
 
+	// Used to access quickly to a tile given a (x, y) coordinate deduced from the player position
 	TArray<TArray<TObjectPtr<ATile>>> TileGrid;
 
 	// Debug function to show colored tiles
