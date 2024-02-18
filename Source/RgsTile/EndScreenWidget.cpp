@@ -9,9 +9,11 @@
 
 void UEndScreenWidget::OpenEndScreen(bool bIsWin)
 {
+	SetVisibility(ESlateVisibility::HitTestInvisible);
+
 	PlayAnimationForward(Animation_PanelPopUp);
 
-	if (EndGameText == nullptr)
+	if (!EndGameText)
 	{
 		UE_LOG(LogTemp, Error, TEXT(" End Game block text is null"));
 		return;
@@ -30,4 +32,6 @@ void UEndScreenWidget::OpenEndScreen(bool bIsWin)
 void UEndScreenWidget::CloseEndScreen()
 {
 	PlayAnimationReverse(Animation_PanelPopUp);
+
+	SetVisibility(ESlateVisibility::Collapsed);
 }
