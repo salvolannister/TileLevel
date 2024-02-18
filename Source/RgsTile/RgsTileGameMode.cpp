@@ -10,6 +10,8 @@
 #include "Tile.h"
 #include "TileHUD.h"
 
+#define WITH_DEBUG 0 // change it to 1 to enable debug
+
 ARgsTileGameMode::ARgsTileGameMode()
 {
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPersonCPP/Blueprints/ThirdPersonCharacter"));
@@ -237,6 +239,7 @@ ATile* ARgsTileGameMode::GetTileFromPosition(const FVector& Position) const
 	int32 x = FMath::RoundToInt(TmpPosition.X);
 	int32 y = FMath::RoundToInt(TmpPosition.Y);
 
+#if WITH_DEBUG
 	FString DebugMessage;
 	if (GEngine)
 	{
@@ -246,20 +249,26 @@ ATile* ARgsTileGameMode::GetTileFromPosition(const FVector& Position) const
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, DebugMessage, false);
 
 	}
+#endif
+
 
 	if (x < 0 || x >= TileGridSize || y < 0 || y >= TileGridSize)
 	{
-		
+
+#if WITH_DEBUG
 		DebugMessage = FString::Printf(TEXT("Found x %d, y %d which is not in the screen"), x, y);
 
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, DebugMessage, false);
 		}
+#endif
 		return nullptr;
 	}
+#if WITH_DEBUG
 	else
 	{
+
 		DebugMessage = FString::Printf(TEXT("Player on grid x %d, y %d "), x, y);
 
 		if (GEngine)
@@ -268,6 +277,7 @@ ATile* ARgsTileGameMode::GetTileFromPosition(const FVector& Position) const
 		}
 
 	}
+#endif
 
 	return TileGrid[x][y];
 
@@ -410,18 +420,10 @@ void ARgsTileGameMode::EndGame(bool bIsWin, bool bForceRestart)
 		UE_LOG(LogTemp, Warning, TEXT("No subscribers to OnEndGameDelegate"));
 	}
 	
-
-	if (bIsWin)
-	{
-		// Show game over win panel
-	}
-	else if (bForceRestart)
+	if (bForceRestart)
 	{
 		ResetGame();
 	}
-	else
-	{
-		// Show game over screen and restart after 5 seconds
-	}
+	
 }
 
