@@ -4,21 +4,49 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 
 # Requirements
 
-- [ Additional ] Add tile that turns blu and its behaviour
 
-- [ Additional ] There should be some BP rules that constrain red tiles to be a certain number that doesn't prevent player win (there is no path for the player to win)
+- add In to varibale that are not modified and passed by refererence
 
-- [ Additional ] Add effect on tile StepOn: red tile shoud tremble, then show smoke and at the end show a red color
+- add const to every parameter that is not intended to be modified
 
-- [ Additional ] Add effect on tile Green StepOn: green tile should tremble and after should show stars and later green color
+- add comment about return expected type where you pass null
 
-- [ Additional ] Add sounds 
+- initialization can be done in header files too, but don't split it both in header and cpp files
 
-- [ Additional ] Try to understand that calling the interface in this way is a bad idea
+- [Additional] Add tile that turns blu and its behaviour
+
+- [Additional] There should be some BP rules that constrain red tiles to be a certain number that doesn't prevent player win (there is no path for the player to win)
+
+- [Additional] Add effect on tile StepOn: red tile shoud tremble, then show smoke and at the end show a red color
+
+- [Additional] Add effect on tile Green StepOn: green tile should tremble and after should show stars and later green color
+
+- [Additional] Add sounds 
+
+- [Additional] Try to understand that calling the interface in this way is a bad idea
 
 # Currently working on
 
 - Add comments to methods, check naming conventions, improve certain methods that now gets called continously
+
+# Doubts
+
+- ask someone if the implementation of the HUD half in the BP and half in cpp is a red flag or is ok:
+  I did this because it was implemented already in the blueprint but I wanted to add an animation and the faster way I knew to do it
+  was using cpp
+
+- Reloading the scene was already in the code base, but it kinda feels very bad for optimization. Should I remove it?
+
+- If in ATile the basic implementation is absent should I remove it from the cpp file?
+
+- Should I remove this log or set it between #WITH_DEBUG?
+	if (EndGameText.IsNull())
+	{
+		UE_LOG(LogTemp, Error, TEXT(" End Game block text is null"));
+		return;
+	}
+
+# Resources
 
 # Done
 
