@@ -7,10 +7,11 @@
 #include "Math/UnrealMathUtility.h"
 
 #include "RgsTileCharacter.h"
+#include "RgsConfiguration.h"
 #include "Tile.h"
 #include "TileHUD.h"
 
-#define WITH_DEBUG 0 // change it to 1 to enable debug
+
 
 ARgsTileGameMode::ARgsTileGameMode()
 {
@@ -215,8 +216,9 @@ void ARgsTileGameMode::SpawnRedTiles()
 			RedTilesArray.Add(Tile);
 			
 			Tile->StoreTileGridPosition(x, y);
+#if WITH_DEBUG
 			Tile->SetRenderText(x, y);
-
+#endif
 	   }
 	   else 
 	   {
@@ -404,8 +406,6 @@ bool ARgsTileGameMode::IsNotStartTile(int32 x, int32 y) const
 		return true;
 	else
 		return false;
-
-
 
 }
 

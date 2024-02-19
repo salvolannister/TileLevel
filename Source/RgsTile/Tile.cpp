@@ -1,10 +1,13 @@
 // Copyright(c) Forge Reply. All Rights Reserved.
 
 #include "Tile.h"
+
 #include "UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Materials/MaterialInstance.h"
+
+#include "RgsConfiguration.h"
 
 
 ATile::ATile()
@@ -22,10 +25,12 @@ ATile::ATile()
 	MeshComponent->SetMaterial(0, TimeMaterialInstance.Object);
 	MeshComponent->SetupAttachment(RootComponent);
 
+#if WITH_DEBUG
 	TileCoordinateText = CreateDefaultSubobject<UTextRenderComponent>(FName("TextCoordinates"));
 	TileCoordinateText->SetRelativeLocationAndRotation(FVector(0.f, 30.f, 60.f), FRotator(90.f, 90.f, 90.f));
 	TileCoordinateText->SetupAttachment(RootComponent);
 	TileCoordinateText->SetTextRenderColor(FColor::Black);
+#endif
 
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -67,13 +72,20 @@ void ATile::StepOff()
 	
 }
 
+
 void ATile::SetRenderText(const int32 x, const int32 y)
 {
+	if (!TileCoordinateText)
+	{
+		return;
+	}
+
 	TileCoordinateText->SetText(FText::Format(NSLOCTEXT("Coordinates","Coordinates","(X:{0}, Y:{1})"), 
 								FText::AsNumber(x),
 								FText::AsNumber(y))
 	);
 }
+
 
 void ATile::ShowTileColor(bool bShowColor)
 {
