@@ -4,6 +4,7 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 
 # Requirements
 
+- if player jumping tile shouldn't become colored
 
 - add In to varibale that are not modified and passed by refererence
 
@@ -27,7 +28,7 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 
 # Currently working on
 
-- Add comments to methods, check naming conventions, improve certain methods that now gets called continously
+- improve certain methods that now gets called continously
 
 # Doubts
 
@@ -62,3 +63,4 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 - Add tile that turns Silver
 - Use C++ inheritance to handle ATiles
 - Generate grid reading input from TileGameModeBP
+- Add comments to methods and check naming conventions
