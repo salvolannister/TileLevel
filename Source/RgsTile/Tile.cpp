@@ -76,16 +76,9 @@ void ATile::SetRenderText(const int32 x, const int32 y)
 	);
 }
 
-void ATile::ShowTileEffect(bool bShowEffect)
+void ATile::ShowTileColor(bool bShowColor)
 {
-	if (bShowEffect)
-	{
-		StepOn();
-	}
-	else
-	{
-		StepOff();
-	}
+
 }
 
 bool ATile::HasBeenVisited() const
