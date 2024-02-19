@@ -23,7 +23,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
 	void ShowEndScreen();
 
-	// Method used to subscribe to the EndGame event and open the EndScreenWidget
+	// Method used to subscribe to the EndGame event in RgsTileGameMode and open the EndScreenWidget
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void ShowEndScreenEvent(bool bIsWin, bool bForceRestart);
 	
