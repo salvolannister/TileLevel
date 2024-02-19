@@ -113,16 +113,26 @@ private:
 	// Debug function to show colored tiles
 	void ShowColoredTiles();
 
+	// Generates red tiles on the grid and stores them also in an array
 	void SpawnRedTiles();
 
+	// Generates green tiles on the grid and stores them also in an array
 	void SpawnGreenTiles();
 
-	// Checks if a green tile has at least one tile that is not read in it's neighborhood
+	// Checks if a green tile has at least one tile that is not red in it's neighborhood
 	bool IsGreenTileReachable(const int32 x, const int32 y) const;
-
+	
+	// Given a (x, y) coordinate deduce its associated position on the 3D Space
 	FVector Get3DSpaceTileLocation(const int32 x, const int32 y);
 
-	// Given a position in 3D space gives the corresponding associated tile (if there is any)
+	/**
+	 * Get the associated tile at a 3D position.
+	 *
+	 * Retrieves the tile associated with a given 3D position. Returns nullptr if no tile is found.
+	 *
+	 * @param Position The 3D position in space.
+	 * @return The associated tile, or nullptr if none.
+	*/
 	ATile* GetTileFromPosition(const FVector& Position) const;
 
 	// Given a position in 3D space gives the corresponding associated tile coordinates (x, y) 
@@ -136,21 +146,41 @@ private:
 	// Tells if the coordinate (x, y) are the one from the player start position tile
 	bool IsNotStartTile(int32 x, int32 y) const;
 
+	/**
+	 * Called when the gameplay is over, either due to collecting all red or green tiles or
+	 * the player falling off the platform.This method takes two parameters :
+	 * @param bIsWin Indicates whether the player has won the game(true) or not (false).
+	 * @param bForceRestart If true, the game will be restarted immediately, skipping the game over panel.
+	*/
 	void EndGame(bool bIsWin, bool bForceRestart = false);
 
+	// Value calculated runtime to spawn tiles around starting platform
 	FVector TilesGridOffset;
 
+	// Tile where the player is currently located
 	TObjectPtr<ATile> CurrentPlayerTile;
 
+	// Number of green tiles the player has stood on. 
 	int32 GreenTilesFound = 0;
 
+	// Number of red tiles the player has stood on. 
 	int32 RedTilesFound = 0;
 
+	/**
+	 * This collection provides a faster access
+	 * way for calculating distances from the player. Use it to optimize
+	 * gameplay mechanics related to green tiles.
+	 */
 	TArray<TObjectPtr<ATile>> GreenTilesArray;
 
+	/**
+	 * This collection provides a faster access
+	 * way for calculating distances from the player. Use it to optimize
+	 * gameplay mechanics related to red tiles.
+	 */
 	TArray<TObjectPtr<ATile>> RedTilesArray;
 
-	// Used to avoid setting a blue, red, or green coordinate in that position
+	// Used to avoid spawning a blue, red, or green tile in the start position
 	FVector2D StartTileCoordinates;
 };
 

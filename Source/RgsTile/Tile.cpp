@@ -67,7 +67,6 @@ void ATile::StepOff()
 	
 }
 
-
 void ATile::SetRenderText(const int32 x, const int32 y)
 {
 	TileCoordinateText->SetText(FText::Format(NSLOCTEXT("Coordinates","Coordinates","(X:{0}, Y:{1})"), 
@@ -85,7 +84,6 @@ bool ATile::HasBeenVisited() const
 {
 	return bVisited;
 }
-
 
 void ATile::StoreTileGridPosition(const int32 x, const int32 y)
 {
