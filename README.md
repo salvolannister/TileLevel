@@ -4,13 +4,9 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 
 # Requirements
 
+- stop input when game is over
+
 - if player jumping tile shouldn't become colored
-
-- add In to varibale that are not modified and passed by refererence
-
-- add const to every parameter that is not intended to be modified
-
-- add comment about return expected type where you pass null
 
 - initialization can be done in header files too, but don't split it both in header and cpp files
 
@@ -34,7 +30,8 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 
 - ask someone if the implementation of the HUD half in the BP and half in cpp is a red flag or is ok:
   I did this because it was implemented already in the blueprint but I wanted to add an animation and the faster way I knew to do it
-  was using cpp
+  was using cpp 
+--> ANSWER: just tell them that since it was already half implemeted and was a test you left it there but for production you would have move everything inside cpp
 
 - Reloading the scene was already in the code base, but it kinda feels very bad for optimization. Should I remove it?
 
@@ -64,3 +61,6 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 - Use C++ inheritance to handle ATiles
 - Generate grid reading input from TileGameModeBP
 - Add comments to methods and check naming conventions
+- add In to varibale that are not modified and passed by refererence
+- add const to every parameter that is not intended to be modified
+- add comment about return expected type where you pass null
