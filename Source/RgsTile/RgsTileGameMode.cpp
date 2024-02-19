@@ -110,7 +110,7 @@ void ARgsTileGameMode::ShowColoredTiles()
 	{
 		for (int ii = 0; ii < TileGridSize; ii++)
 		{
-			TileGrid[i][ii]->ShowTileEffect(true);
+			TileGrid[i][ii]->ShowTileColor(true);
 		}
 	}
 }

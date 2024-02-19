@@ -31,3 +31,17 @@ void ARedTile::BeginPlay()
 
 	bVisited = false;
 }
+
+void ARedTile::ShowTileColor(bool bShowColor)
+{
+	if (bShowColor)
+	{
+		MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Red));
+		MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 1.0f);
+	}
+	else
+	{
+		MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Silver));
+		MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 0.0f);
+	}
+}

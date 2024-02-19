@@ -27,3 +27,15 @@ void ANormalTile::BeginPlay()
 
 	TileType = ETileType::Normal;
 }
+
+void ANormalTile::ShowTileColor(bool bShowColor)
+{
+	if (bShowColor)
+	{		
+		MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 1.0f);
+	}
+	else
+	{
+		MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 0.0f);
+	}
+}
