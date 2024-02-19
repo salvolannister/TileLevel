@@ -12,8 +12,7 @@ void ARedTile::StepOn()
 		return;
 	
 	bVisited = true;
-	MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Red));
-	MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 1.0f);
+	ShowTileColor(true);
 	
 }
 

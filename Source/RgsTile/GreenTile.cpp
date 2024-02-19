@@ -11,9 +11,7 @@ void AGreenTile::StepOn()
 		return;
 
 	bVisited = true;
-	MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Green));
-	MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 1.0f);
-
+	ShowTileColor(true);
 }
 
 void AGreenTile::StepOff()
