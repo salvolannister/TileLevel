@@ -183,8 +183,7 @@ private:
 	int32 RedTilesFound = 0;
 
 	/**
-	 * This collection provides a faster access
-	 * way for calculating distances from the player. Use it to optimize
+	 * This collection provides a faster access method for calculating distances from the player. Use it to optimize
 	 * gameplay mechanics related to green tiles.
 	 */
 	TArray<TObjectPtr<ATile>> GreenTilesArray;
