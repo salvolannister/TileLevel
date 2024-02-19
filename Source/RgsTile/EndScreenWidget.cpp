@@ -27,6 +27,9 @@ void UEndScreenWidget::OpenEndScreen(bool bIsWin)
 	{
 		EndGameText->SetText(LoosingText);
 	}
+
+	
+
 }
 
 void UEndScreenWidget::CloseEndScreen()
@@ -34,4 +37,5 @@ void UEndScreenWidget::CloseEndScreen()
 	PlayAnimationReverse(Animation_PanelPopUp);
 
 	SetVisibility(ESlateVisibility::Collapsed);
+
 }
