@@ -25,6 +25,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// Resets the game, by forcing the reload of the game level.
+	UFUNCTION(BlueprintCallable)
 	void ResetGame();
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTEndGameMulticastDelegate, bool, bIsWin, bool, bForceRestart);
@@ -133,18 +134,18 @@ private:
 	 * @param Position The 3D position in space.
 	 * @return The associated tile, or nullptr if none.
 	*/
-	ATile* GetTileFromPosition(const FVector& Position) const;
+	ATile* GetTileFromPosition(const FVector& InPosition) const;
 
 	// Given a position in 3D space gives the corresponding associated tile coordinates (x, y) 
 	// it could give also coordinates outside the grid 
-	FVector2D GetCoordinatesFromPosition(const FVector& Position) const;
+	FVector2D GetCoordinatesFromPosition(const FVector& InPosition) const;
 
 	// Finds the minimum distance in number of tiles to visit in order to reach one of the Tiles still not visited 
 	// from a Tile with coordinate of cell x and y
-	int32 GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& Tiles) const;
+	int32 GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& InTiles) const;
 
 	// Tells if the coordinate (x, y) are the one from the player start position tile
-	bool IsNotStartTile(int32 x, int32 y) const;
+	bool IsNotStartTile(const int32 x, const int32 y) const;
 
 	/**
 	 * Called when the gameplay is over, either due to collecting all red or green tiles or
@@ -153,6 +154,15 @@ private:
 	 * @param bForceRestart If true, the game will be restarted immediately, skipping the game over panel.
 	*/
 	void EndGame(bool bIsWin, bool bForceRestart = false);
+
+	/**
+	* Controls the player input mode, allowing you to switch between UI-only and player-only modes.
+	*
+	* @param bUIOnly When true, sets the input mode to UI Only, enabling interaction with UI widgets.
+	*                When false, sets the input mode back to player only, allowing standard gameplay input.
+	*
+	*/
+	void SetPlayerInputModeToUIOnly(bool bUIOnly);
 
 	// Value calculated runtime to spawn tiles around starting platform
 	FVector TilesGridOffset;

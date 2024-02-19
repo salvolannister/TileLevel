@@ -10,6 +10,7 @@
 #include "RgsConfiguration.h"
 #include "Tile.h"
 #include "TileHUD.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/Character.h>
 
 
 
@@ -28,6 +29,7 @@ ARgsTileGameMode::ARgsTileGameMode()
 
 void ARgsTileGameMode::ResetGame()
 {
+	SetPlayerInputModeToUIOnly(false);
 	UGameplayStatics::OpenLevel(this, FName("/Game/Levels/LoadingLevel"));
 }
 
@@ -291,6 +293,30 @@ FVector2D ARgsTileGameMode::GetCoordinatesFromPosition(const FVector& Position) 
 	return FVector2D(FMath::RoundToInt(TmpPosition.X), FMath::RoundToInt(TmpPosition.Y));
 }
 
+void ARgsTileGameMode::SetPlayerInputModeToUIOnly(bool bUIOnly)
+{
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	if (!PlayerController)
+		return;
+
+	FInputModeUIOnly InputModeUI;
+	FInputModeGameOnly InputModeGame;
+
+	if (bUIOnly)
+	{
+		PlayerController->SetIgnoreMoveInput(true);
+		PlayerController->SetInputMode(InputModeUI);
+
+	}
+	else
+	{
+		PlayerController->SetIgnoreMoveInput(false);
+		PlayerController->SetInputMode(InputModeGame);
+	}
+}
+
+
 void ARgsTileGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -319,7 +345,6 @@ void ARgsTileGameMode::BeginPlay()
 
 	GreenTilesFound = RedTilesFound = 0;
 
-	//TODO: implementation
 }
 
 void ARgsTileGameMode::Tick(float DeltaTime)
@@ -363,19 +388,19 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 	
 }
 
-int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& Tiles) const
+int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& InTiles) const
 {
 	/* To determine the minimum, we consider the maximum distance module between the distances in the x and y directions.
 	 * This ensures that an element on the diagonal e.g. (x + 1, y + 1) of the current coordinates(x, y) is equidistant 
 	 * from one on the sides e.g. (x + 1, y).
 	 */
 
-	if (Tiles.Num() == 0)
+	if (InTiles.Num() == 0)
 		return -1;
 
 	int32 MinDistanceFound = TileGridSize;
 
-	for (const ATile* TilePtr : Tiles)
+	for (const ATile* TilePtr : InTiles)
 	{
 		if (TilePtr && !TilePtr->HasBeenVisited())
 		{
@@ -399,7 +424,7 @@ int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, con
 	return MinDistanceFound;
 }
 
-bool ARgsTileGameMode::IsNotStartTile(int32 x, int32 y) const
+bool ARgsTileGameMode::IsNotStartTile(const int32 x, const int32 y) const
 {
 	
 	if (x != StartTileCoordinates.X || y != StartTileCoordinates.Y)
@@ -411,6 +436,9 @@ bool ARgsTileGameMode::IsNotStartTile(int32 x, int32 y) const
 
 void ARgsTileGameMode::EndGame(bool bIsWin, bool bForceRestart)
 {
+	
+	SetPlayerInputModeToUIOnly(true);
+
 	if (OnEndGameDelegate.IsBound())
 	{
 		OnEndGameDelegate.Broadcast(bIsWin, bForceRestart);
