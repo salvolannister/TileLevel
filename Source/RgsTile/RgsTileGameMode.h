@@ -120,6 +120,9 @@ private:
 	// Generates green tiles on the grid and stores them also in an array
 	void SpawnGreenTiles();
 
+	// Creates the blue tile
+	void SpawnBlueTile();
+
 	// Checks if a green tile has at least one tile that is not red in it's neighborhood
 	bool IsGreenTileReachable(const int32 x, const int32 y) const;
 	
@@ -163,6 +166,9 @@ private:
 	*
 	*/
 	void SetPlayerInputModeToUIOnly(bool bUIOnly);
+
+	/* Used to show all the green tiles that have not still been visited */
+	void RevealGreenTiles(bool bReveal);
 
 	// Value calculated runtime to spawn tiles around starting platform
 	FVector TilesGridOffset;

@@ -30,6 +30,16 @@ void ABlueTile::ShowTileColor(bool bShowColor)
 	else
 	{
 		MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Silver));
-		MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 1.0f);
+		MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 0.f);
 	}
+}
+
+
+void ABlueTile::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TileType = ETileType::Blue;
+
+	bVisited = false;
 }

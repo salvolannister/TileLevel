@@ -84,7 +84,9 @@ void ARgsTileGameMode::SpawnTileGrid()
 
 	SpawnGreenTiles();
 	
-	// Add blue tiles
+	// Add blue tile
+
+	SpawnBlueTile();
 
 	// spawn normal tiles
 	for (int32 x = 0; x < TileGridSize; x++)
@@ -104,7 +106,7 @@ void ARgsTileGameMode::SpawnTileGrid()
 	}
 
 	// Show tiles for debugging
-	//ShowColoredTiles();
+	ShowColoredTiles();
 }
 
 void ARgsTileGameMode::ShowColoredTiles()
@@ -126,12 +128,6 @@ void ARgsTileGameMode::SpawnGreenTiles()
 		return;
 	}
 
-	if (GreenTilesArray.Num() == 0)
-	{
-		GreenTilesArray.SetNum(GreenTilesToSpawn);
-	}
-
-
 	for (int32 i = GreenTilesToSpawn; i > 0; i--)
 	{
 		int32 x = FMath::RandRange(0, TileGridSize - 1);
@@ -147,7 +143,10 @@ void ARgsTileGameMode::SpawnGreenTiles()
 			GreenTilesArray.Add(Tile);
 			Tile->StoreTileGridPosition(x, y);
 
+#if WITH_DEBUG
 			Tile->SetRenderText(x, y);
+#endif
+
 		}
 		else
 		{
@@ -155,6 +154,49 @@ void ARgsTileGameMode::SpawnGreenTiles()
 		}
 	}
 }					   
+
+void ARgsTileGameMode::SpawnBlueTile()
+{
+	if (TileGrid.Num() == 0 || TileGrid[0].Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Tile grid is not initialized!"));
+		return;
+	}
+
+	if (!BlueTileBP)
+	{
+		UE_LOG(LogTemp, Error, TEXT("BlueTileBP is not set in blueprint"));
+		return;
+	}
+
+
+	int32 NAttempts = 10;
+	bool bBlueTileSpawned = false;
+	while (NAttempts > 0 && !bBlueTileSpawned)
+	{
+		int32 x = FMath::RandRange(0, TileGridSize - 1);
+		int32 y = FMath::RandRange(0, TileGridSize - 1);
+
+		if (!TileGrid[x][y] && IsNotStartTile(x, y) && IsGreenTileReachable(x, y))
+		{
+		
+				FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
+				ATile* Tile = GetWorld()->SpawnActor<ATile>(BlueTileBP, SpawnLocation, FRotator::ZeroRotator);
+				TileGrid[x][y] = Tile;
+				Tile->StoreTileGridPosition(x, y);
+				bBlueTileSpawned = true;
+
+#if WITH_DEBUG
+				Tile->SetRenderText(x, y);
+#endif
+		}
+		else
+		{
+			NAttempts --;
+		}
+
+	}
+}
 
 bool ARgsTileGameMode::IsGreenTileReachable(const int32 x, const int32 y) const
 {
@@ -197,11 +239,6 @@ void ARgsTileGameMode::SpawnRedTiles()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Tile grid is not initialized!"));
 		return;
-	}
-
-	if (RedTilesArray.Num() == 0)
-	{
-		RedTilesArray.SetNum(RedTilesToSpawn);
 	}
 
 	for (int32 i = RedTilesToSpawn; i > 0; i--)
@@ -317,6 +354,17 @@ void ARgsTileGameMode::SetPlayerInputModeToUIOnly(bool bUIOnly)
 }
 
 
+void ARgsTileGameMode::RevealGreenTiles(bool bReveal)
+{
+	for(ATile* Tile : GreenTilesArray)
+	{
+		if (!Tile->HasBeenVisited())
+		{
+			Tile->ShowTileColor(bReveal);
+		}
+	}
+}
+
 void ARgsTileGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -355,6 +403,13 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 	if (T && CurrentPlayerTile && T != CurrentPlayerTile)
 	{
 		CurrentPlayerTile->StepOff();
+	
+		// Player was on a blue Tile and now is stepping in a new Tile T
+		if (CurrentPlayerTile->IsA(BlueTileBP))
+		{
+			RevealGreenTiles(false);
+		}
+
 		CurrentPlayerTile = T;
 
 		if (CurrentPlayerTile->IsA(RedTileBP) && !CurrentPlayerTile->HasBeenVisited())
@@ -375,6 +430,10 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 			{
 				EndGame(true);
 			}
+		}
+		else if (CurrentPlayerTile->IsA(BlueTileBP))
+		{
+			RevealGreenTiles(true);
 		}
 
 		CurrentPlayerTile->StepOn();
