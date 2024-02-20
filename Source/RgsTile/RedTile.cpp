@@ -3,6 +3,19 @@
 
 #include "RedTile.h"
 
+#include "Particles/ParticleSystem.h"
+#include "../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+
+ARedTile::ARedTile()
+{
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> ExplosionParticles(TEXT("/Game/StarterContent/Particles/P_Explosion"));
+	if (ExplosionParticles.Object)
+	{
+		ParticleSystem = ExplosionParticles.Object;
+	}
+
+}
 
 void ARedTile::StepOn()
 {
@@ -11,6 +24,13 @@ void ARedTile::StepOn()
 	if (bVisited)
 		return;
 	
+	
+
+	if (ParticleSystem)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleSystem, GetActorLocation(), FRotator::ZeroRotator, true);
+	}
+
 	bVisited = true;
 	ShowTileColor(true);
 	

@@ -3,8 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "Tile.h"
+
 #include "RedTile.generated.h"
+
+class UParticleSystem;
 
 /**
  * 
@@ -16,6 +20,8 @@ class RGSTILE_API ARedTile : public ATile
 	
 public: 
 	
+	ARedTile();
+
 	virtual void StepOn() override;
 
 	virtual void StepOff() override;
@@ -26,4 +32,8 @@ protected:
 
 	virtual void BeginPlay() override;
 
+private: 
+
+	/** Particle system instance to plat with */
+	TObjectPtr<UParticleSystem> ParticleSystem;
 };
