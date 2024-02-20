@@ -123,7 +123,7 @@ private:
 	// Creates the blue tile
 	void SpawnBlueTile();
 
-	// Checks if a tile has at least one tile that is not red in it's neighborhood (the eight tiles around it)
+	// Checks if a tile has at least one tile that is not red in its surrounding (the two tiles down/up the center tile and the two on the right/left side)
 	bool IsTileReachable(const int32 x, const int32 y) const;
 	
 	// Given a (x, y) coordinate deduce its associated position on the 3D Space

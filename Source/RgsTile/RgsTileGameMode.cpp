@@ -212,9 +212,9 @@ int32 ARgsTileGameMode::GetClosestRedTileDistance()
 
 int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& InTiles) const
 {
-	/* To determine the minimum, we consider the maximum distance module between the distances in the x and y directions.
-	 * This ensures that an element on the diagonal e.g. (x + 1, y + 1) of the current coordinates(x, y) is equidistant 
-	 * from one on the sides e.g. (x + 1, y).
+	/* To determine the minimum, we consider the sum of the distance module between the distances in the x and y directions.
+	 * An element on the diagonal e.g. (x + 1, y + 1) of the current coordinates (x, y) won't be reachable through one step of our current pawn
+	 * so it is considered at distance two instead of one
 	 */
 
 	if (InTiles.Num() == 0)
@@ -229,7 +229,7 @@ int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, con
 			int32 DistanceOnX = FMath::Abs(x - TilePtr->TilePosX);
 			int32 DistanceOnY = FMath::Abs( y - TilePtr->TilePosY);
 
-			int32 NumTileToReachPos = FMath::Max(DistanceOnX, DistanceOnY);
+			int32 NumTileToReachPos = DistanceOnX + DistanceOnY;
 
 			if (MinDistanceFound > NumTileToReachPos)
 			{
@@ -290,8 +290,9 @@ void ARgsTileGameMode::SpawnTileGrid()
 			}
 		}
 	}
-
-
+#if WITH_DEBUG && SHOW_TILES_COLOR
+	ShowColoredTiles();
+#endif
 }
 
 void ARgsTileGameMode::ShowColoredTiles()
@@ -424,32 +425,24 @@ bool ARgsTileGameMode::IsTileReachable(const int32 x, const int32 y) const
 	// Looks if there is at least one tile that can lead to the green Tile without pressing a red tile
     int32 SafeTileNumber = 0;
 
-	for (int32 w = x - 1; w < x + 2; w++)
+	auto IsTileSafeToCross = [&](int32 x, int32 y) -> bool
 	{
-		if(w >= TileGridSize) break;
-		if(w < 0) w++;
-
-		for (int32 h = y - 1; h < h + 2; h++)
+		if (TileGrid.IsValidIndex(x) && TileGrid[x].IsValidIndex(y))
 		{
-			if(h < 0)
-			{
-				h++;
-				continue;
-			}
-			else if(h >= TileGridSize)
-			{
-				break;
-			}
-
-			if(w == x && h == y) continue;
-
-			if (TileGrid[w][h] == nullptr || TileGrid[w][h]->GetType() != ETileType::Red)
-			{
-				SafeTileNumber++;
-				break;
-			}
+			return (TileGrid[x][y] == nullptr || TileGrid[x][y]->GetType() != ETileType::Red);
 		}
+
+		return false;
+	};
+
+	if(IsTileSafeToCross(x + 1, y) || IsTileSafeToCross(x - 1, y) ||
+		IsTileSafeToCross(x, y + 1) || IsTileSafeToCross(x, y -1))
+	{
+		SafeTileNumber++;
 	}
+
+
+
 
 	return SafeTileNumber > 0;
 }
