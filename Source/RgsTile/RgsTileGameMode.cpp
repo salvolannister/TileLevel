@@ -65,11 +65,108 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 	
 }
 
+#pragma region Gameplay
+
+void ARgsTileGameMode::OnPlayerMoveOnTile(ATile* InTile)
+{
+	// Player out of grid
+	if (InTile == nullptr)
+	{
+		EndGame(false, true);
+	}
+
+	if (InTile && CurrentPlayerTile && InTile != CurrentPlayerTile)
+	{
+		CurrentPlayerTile->StepOff();
+
+		// Player was on a blue Tile and now is stepping in a new Tile InTile
+		if (CurrentPlayerTile->IsA(BlueTileBP))
+		{
+			RevealGreenTiles(false);
+		}
+
+		CurrentPlayerTile = InTile;
+
+		if (CurrentPlayerTile->IsA(RedTileBP) && !CurrentPlayerTile->HasBeenVisited())
+		{
+			RedTilesFound++;
+			RedTilesFound = FMath::Clamp(RedTilesFound, 0, RedTilesToSpawn);
+			if (RedTilesFound == RedTilesToSpawn)
+			{
+				EndGame(false);
+			}
+		}
+		else if (CurrentPlayerTile->IsA(GreenTileBP) && !CurrentPlayerTile->HasBeenVisited())
+		{
+			GreenTilesFound++;
+			GreenTilesFound = FMath::Clamp(GreenTilesFound, 0, GreenTilesToSpawn);
+
+			if (GreenTilesFound == GreenTilesToSpawn)
+			{
+				EndGame(true);
+			}
+		}
+		else if (CurrentPlayerTile->IsA(BlueTileBP))
+		{
+			RevealGreenTiles(true);
+		}
+
+		CurrentPlayerTile->StepOn();
+	}
+
+}
+
 void ARgsTileGameMode::ResetGame()
 {
 	SetPlayerInputModeToUIOnly(false);
 	UGameplayStatics::OpenLevel(this, FName("/Game/Levels/LoadingLevel"));
 }
+
+void ARgsTileGameMode::EndGame(bool bIsWin, bool bForceRestart)
+{
+	
+	SetPlayerInputModeToUIOnly(true);
+
+	if (OnEndGameDelegate.IsBound())
+	{
+		OnEndGameDelegate.Broadcast(bIsWin, bForceRestart);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No subscribers to OnEndGameDelegate"));
+	}
+	
+	if (bForceRestart)
+	{
+		ResetGame();
+	}
+	
+}
+
+void ARgsTileGameMode::SetPlayerInputModeToUIOnly(bool bUIOnly)
+{
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	if (!PlayerController)
+		return;
+
+	FInputModeUIOnly InputModeUI;
+	FInputModeGameOnly InputModeGame;
+
+	if (bUIOnly)
+	{
+		PlayerController->SetIgnoreMoveInput(true);
+		PlayerController->SetInputMode(InputModeUI);
+
+	}
+	else
+	{
+		PlayerController->SetIgnoreMoveInput(false);
+		PlayerController->SetInputMode(InputModeGame);
+	}
+}
+
+#pragma endregion
 
 int32 ARgsTileGameMode::GetTotalGreenTiles()
 {
@@ -91,6 +188,7 @@ int32 ARgsTileGameMode::GetRedTilesFound()
 	return RedTilesFound;
 }
 
+#pragma region Tiles Distances
 int32 ARgsTileGameMode::GetClosestGreenTileDistance()
 {
 
@@ -102,6 +200,45 @@ int32 ARgsTileGameMode::GetClosestRedTileDistance()
 	return GetClosestTileDistance(CurrentPlayerTile->TilePosX, CurrentPlayerTile->TilePosY, RedTilesArray);
 }
 
+int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& InTiles) const
+{
+	/* To determine the minimum, we consider the maximum distance module between the distances in the x and y directions.
+	 * This ensures that an element on the diagonal e.g. (x + 1, y + 1) of the current coordinates(x, y) is equidistant 
+	 * from one on the sides e.g. (x + 1, y).
+	 */
+
+	if (InTiles.Num() == 0)
+		return -1;
+
+	int32 MinDistanceFound = TileGridSize;
+
+	for (const ATile* TilePtr : InTiles)
+	{
+		if (TilePtr && !TilePtr->HasBeenVisited())
+		{
+			int32 DistanceOnX = FMath::Abs(x - TilePtr->TilePosX);
+			int32 DistanceOnY = FMath::Abs( y - TilePtr->TilePosY);
+
+			int32 NumTileToReachPos = FMath::Max(DistanceOnX, DistanceOnY);
+
+			if (MinDistanceFound > NumTileToReachPos)
+			{
+				MinDistanceFound = NumTileToReachPos;
+				if (MinDistanceFound == 1)
+				{
+					// stop looking since the minimum possible distance was found
+					break;
+				}
+			}
+		}
+	}
+
+	return MinDistanceFound;
+}
+
+#pragma endregion
+
+#pragma region Tiles Spawning
 void ARgsTileGameMode::SpawnTileGrid()
 {
 	if(TileGrid.Num() > 0  && TileGrid[0].Num() > 0)
@@ -236,6 +373,42 @@ void ARgsTileGameMode::SpawnBlueTile()
 	}
 }
 
+void ARgsTileGameMode::SpawnRedTiles()
+{
+	if (TileGrid.Num() == 0 || TileGrid[0].Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Tile grid is not initialized!"));
+		return;
+	}
+
+	for (int32 i = RedTilesToSpawn; i > 0; i--)
+	{
+	   int32 x = FMath::RandRange(0, TileGridSize - 1);
+	   int32 y = FMath::RandRange(0, TileGridSize - 1);
+
+	  
+	   if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y))
+	   {
+			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
+			ATile* Tile = GetWorld()->SpawnActor<ATile>(RedTileBP, SpawnLocation, FRotator::ZeroRotator);
+			TileGrid[x][y] = Tile;
+			RedTilesArray.Add(Tile);
+			
+			Tile->StoreTileGridPosition(x, y);
+#if WITH_DEBUG
+			Tile->SetRenderText(x, y);
+#endif
+	   }
+	   else 
+	   {
+		   i++;
+	   }
+	}
+}
+
+#pragma endregion 
+
+#pragma region Tiles Coordinates
 bool ARgsTileGameMode::IsTileReachable(const int32 x, const int32 y) const
 {
 	// Looks if there is at least one tile that can lead to the green Tile without pressing a red tile
@@ -269,39 +442,6 @@ bool ARgsTileGameMode::IsTileReachable(const int32 x, const int32 y) const
 	}
 
 	return SafeTileNumber > 0;
-}
-
-void ARgsTileGameMode::SpawnRedTiles()
-{
-	if (TileGrid.Num() == 0 || TileGrid[0].Num() == 0)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Tile grid is not initialized!"));
-		return;
-	}
-
-	for (int32 i = RedTilesToSpawn; i > 0; i--)
-	{
-	   int32 x = FMath::RandRange(0, TileGridSize - 1);
-	   int32 y = FMath::RandRange(0, TileGridSize - 1);
-
-	  
-	   if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y))
-	   {
-			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
-			ATile* Tile = GetWorld()->SpawnActor<ATile>(RedTileBP, SpawnLocation, FRotator::ZeroRotator);
-			TileGrid[x][y] = Tile;
-			RedTilesArray.Add(Tile);
-			
-			Tile->StoreTileGridPosition(x, y);
-#if WITH_DEBUG
-			Tile->SetRenderText(x, y);
-#endif
-	   }
-	   else 
-	   {
-		   i++;
-	   }
-	}
 }
 
 FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y)
@@ -368,28 +508,8 @@ FVector2D ARgsTileGameMode::GetCoordinatesFromPosition(const FVector& Position) 
 	return FVector2D(FMath::RoundToInt(TmpPosition.X), FMath::RoundToInt(TmpPosition.Y));
 }
 
-void ARgsTileGameMode::SetPlayerInputModeToUIOnly(bool bUIOnly)
-{
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+#pragma endregion
 
-	if (!PlayerController)
-		return;
-
-	FInputModeUIOnly InputModeUI;
-	FInputModeGameOnly InputModeGame;
-
-	if (bUIOnly)
-	{
-		PlayerController->SetIgnoreMoveInput(true);
-		PlayerController->SetInputMode(InputModeUI);
-
-	}
-	else
-	{
-		PlayerController->SetIgnoreMoveInput(false);
-		PlayerController->SetInputMode(InputModeGame);
-	}
-}
 
 void ARgsTileGameMode::RevealGreenTiles(bool bReveal)
 {
@@ -402,91 +522,6 @@ void ARgsTileGameMode::RevealGreenTiles(bool bReveal)
 	}
 }
 
-void ARgsTileGameMode::OnPlayerMoveOnTile(ATile* InTile)
-{
-	// Player out of grid
-	if (InTile == nullptr)
-	{
-		EndGame(false, true);
-	}
-
-	if (InTile && CurrentPlayerTile && InTile != CurrentPlayerTile)
-	{
-		CurrentPlayerTile->StepOff();
-
-		// Player was on a blue Tile and now is stepping in a new Tile InTile
-		if (CurrentPlayerTile->IsA(BlueTileBP))
-		{
-			RevealGreenTiles(false);
-		}
-
-		CurrentPlayerTile = InTile;
-
-		if (CurrentPlayerTile->IsA(RedTileBP) && !CurrentPlayerTile->HasBeenVisited())
-		{
-			RedTilesFound++;
-			RedTilesFound = FMath::Clamp(RedTilesFound, 0, RedTilesToSpawn);
-			if (RedTilesFound == RedTilesToSpawn)
-			{
-				EndGame(false);
-			}
-		}
-		else if (CurrentPlayerTile->IsA(GreenTileBP) && !CurrentPlayerTile->HasBeenVisited())
-		{
-			GreenTilesFound++;
-			GreenTilesFound = FMath::Clamp(GreenTilesFound, 0, GreenTilesToSpawn);
-
-			if (GreenTilesFound == GreenTilesToSpawn)
-			{
-				EndGame(true);
-			}
-		}
-		else if (CurrentPlayerTile->IsA(BlueTileBP))
-		{
-			RevealGreenTiles(true);
-		}
-
-		CurrentPlayerTile->StepOn();
-	}
-
-}
-
-int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& InTiles) const
-{
-	/* To determine the minimum, we consider the maximum distance module between the distances in the x and y directions.
-	 * This ensures that an element on the diagonal e.g. (x + 1, y + 1) of the current coordinates(x, y) is equidistant 
-	 * from one on the sides e.g. (x + 1, y).
-	 */
-
-	if (InTiles.Num() == 0)
-		return -1;
-
-	int32 MinDistanceFound = TileGridSize;
-
-	for (const ATile* TilePtr : InTiles)
-	{
-		if (TilePtr && !TilePtr->HasBeenVisited())
-		{
-			int32 DistanceOnX = FMath::Abs(x - TilePtr->TilePosX);
-			int32 DistanceOnY = FMath::Abs( y - TilePtr->TilePosY);
-
-			int32 NumTileToReachPos = FMath::Max(DistanceOnX, DistanceOnY);
-
-			if (MinDistanceFound > NumTileToReachPos)
-			{
-				MinDistanceFound = NumTileToReachPos;
-				if (MinDistanceFound == 1)
-				{
-					// stop looking since the minimum possible distance was found
-					break;
-				}
-			}
-		}
-	}
-
-	return MinDistanceFound;
-}
-
 bool ARgsTileGameMode::IsNotStartTile(const int32 x, const int32 y) const
 {
 	
@@ -497,24 +532,4 @@ bool ARgsTileGameMode::IsNotStartTile(const int32 x, const int32 y) const
 
 }
 
-void ARgsTileGameMode::EndGame(bool bIsWin, bool bForceRestart)
-{
-	
-	SetPlayerInputModeToUIOnly(true);
-
-	if (OnEndGameDelegate.IsBound())
-	{
-		OnEndGameDelegate.Broadcast(bIsWin, bForceRestart);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No subscribers to OnEndGameDelegate"));
-	}
-	
-	if (bForceRestart)
-	{
-		ResetGame();
-	}
-	
-}
 
