@@ -24,8 +24,6 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	
-
 	// Resets the game, by forcing the reload of the game level.
 	UFUNCTION(BlueprintCallable)
 	void ResetGame();

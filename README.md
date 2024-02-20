@@ -4,13 +4,9 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 
 # Requirements
 
-- stop input when game is over
-
-- if player jumping tile shouldn't become colored
-
-- initialization can be done in header files too, but don't split it both in header and cpp files
-
-- [Additional] Add tile that turns blu and its behaviour
+- refactor the tick function in gamemode
+ 
+- [Additional]if player jumping tile shouldn't become colored
 
 - [Additional] There should be some BP rules that constrain red tiles to be a certain number that doesn't prevent player win (there is no path for the player to win)
 
@@ -64,3 +60,5 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 - add In to varibale that are not modified and passed by refererence
 - add const to every parameter that is not intended to be modified
 - add comment about return expected type where you pass null
+- stop input when game is over
+- [Additional] Add tile that turns blu and its behaviour

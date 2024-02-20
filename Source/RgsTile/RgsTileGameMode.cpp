@@ -26,6 +26,44 @@ ARgsTileGameMode::ARgsTileGameMode()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
+void ARgsTileGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	if (!PlayerController)
+		return;
+
+	const APawn* PlayerPawn = PlayerController->GetPawn();
+
+	if (!PlayerPawn)
+		return;
+
+	const int32 TileGridSizeOffset = TileGridSize % 2 == 0 ? 0 : 1;
+
+	TilesGridCenterPosition = PlayerPawn->GetActorLocation();
+	TilesGridCenterPosition.X += (TileGridSize + TileGridSizeOffset) * 100.f;
+	TilesGridCenterPosition.Y += (TileGridSize + TileGridSizeOffset) * 100.f;
+	TilesGridCenterPosition.Z = -(TilesGridCenterPosition.Z - PlayerPawn->GetDefaultHalfHeight());
+	
+	StartTileCoordinates = GetCoordinatesFromPosition(PlayerPawn->GetActorLocation());
+	SpawnTileGrid();
+	CurrentPlayerTile = GetTileFromPosition(PlayerPawn->GetActorLocation());
+	GreenTilesFound = RedTilesFound = 0;
+
+}
+
+void ARgsTileGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+
+	ATile* T = GetTileFromPosition(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
+	OnPlayerMoveOnTile(T);
+
+	
+}
 
 void ARgsTileGameMode::ResetGame()
 {
@@ -200,7 +238,7 @@ void ARgsTileGameMode::SpawnBlueTile()
 
 bool ARgsTileGameMode::IsTileReachable(const int32 x, const int32 y) const
 {
-	// Looks if there is at least one safe Tile that can lead to the green Tile
+	// Looks if there is at least one tile that can lead to the green Tile without pressing a red tile
     int32 SafeTileNumber = 0;
 
 	for (int32 w = x - 1; w < x + 2; w++)
@@ -353,7 +391,6 @@ void ARgsTileGameMode::SetPlayerInputModeToUIOnly(bool bUIOnly)
 	}
 }
 
-
 void ARgsTileGameMode::RevealGreenTiles(bool bReveal)
 {
 	for(ATile* Tile : GreenTilesArray)
@@ -363,34 +400,6 @@ void ARgsTileGameMode::RevealGreenTiles(bool bReveal)
 			Tile->ShowTileColor(bReveal);
 		}
 	}
-}
-
-void ARgsTileGameMode::BeginPlay()
-{
-	Super::BeginPlay();
-
-	const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-
-	if (!PlayerController)
-		return;
-
-	const APawn* PlayerPawn = PlayerController->GetPawn();
-
-	if (!PlayerPawn)
-		return;
-
-	const int32 TileGridSizeOffset = TileGridSize % 2 == 0 ? 0 : 1;
-
-	TilesGridCenterPosition = PlayerPawn->GetActorLocation();
-	TilesGridCenterPosition.X += (TileGridSize + TileGridSizeOffset) * 100.f;
-	TilesGridCenterPosition.Y += (TileGridSize + TileGridSizeOffset) * 100.f;
-	TilesGridCenterPosition.Z = -(TilesGridCenterPosition.Z - PlayerPawn->GetDefaultHalfHeight());
-	
-	StartTileCoordinates = GetCoordinatesFromPosition(PlayerPawn->GetActorLocation());
-	SpawnTileGrid();
-	CurrentPlayerTile = GetTileFromPosition(PlayerPawn->GetActorLocation());
-	GreenTilesFound = RedTilesFound = 0;
-
 }
 
 void ARgsTileGameMode::OnPlayerMoveOnTile(ATile* InTile)
@@ -440,17 +449,6 @@ void ARgsTileGameMode::OnPlayerMoveOnTile(ATile* InTile)
 		CurrentPlayerTile->StepOn();
 	}
 
-}
-
-void ARgsTileGameMode::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-
-	ATile* T = GetTileFromPosition(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
-	OnPlayerMoveOnTile(T);
-
-	
 }
 
 int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& InTiles) const
