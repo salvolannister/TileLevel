@@ -99,14 +99,14 @@ void ARgsTileGameMode::SpawnTileGrid()
 				ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, FRotator::ZeroRotator);
 				TileGrid[x][y] = Tile;
 				Tile->StoreTileGridPosition(x, y);
-
+#if WITH_DEBUG
 				Tile->SetRenderText(x, y);
+#endif
 			}
 		}
 	}
 
-	// Show tiles for debugging
-	ShowColoredTiles();
+
 }
 
 void ARgsTileGameMode::ShowColoredTiles()
@@ -134,7 +134,7 @@ void ARgsTileGameMode::SpawnGreenTiles()
 		int32 y = FMath::RandRange(0, TileGridSize - 1);
 
 
-		if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y) && IsGreenTileReachable(x, y))
+		if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y) && IsTileReachable(x, y))
 		{
 		
 			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
@@ -177,7 +177,7 @@ void ARgsTileGameMode::SpawnBlueTile()
 		int32 x = FMath::RandRange(0, TileGridSize - 1);
 		int32 y = FMath::RandRange(0, TileGridSize - 1);
 
-		if (!TileGrid[x][y] && IsNotStartTile(x, y) && IsGreenTileReachable(x, y))
+		if (!TileGrid[x][y] && IsNotStartTile(x, y) && IsTileReachable(x, y))
 		{
 		
 				FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
@@ -198,7 +198,7 @@ void ARgsTileGameMode::SpawnBlueTile()
 	}
 }
 
-bool ARgsTileGameMode::IsGreenTileReachable(const int32 x, const int32 y) const
+bool ARgsTileGameMode::IsTileReachable(const int32 x, const int32 y) const
 {
 	// Looks if there is at least one safe Tile that can lead to the green Tile
     int32 SafeTileNumber = 0;
@@ -270,7 +270,7 @@ FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y)
 {
 	FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(TileGridSize),
 		static_cast<float>(y) - static_cast<float>(TileGridSize),
-		0.f) * SectorSize * 1.f + TilesGridOffset;
+		0.f) * SectorSize * 1.f + TilesGridCenterPosition;
 	return SpawnLocation;
 }
 
@@ -326,7 +326,7 @@ ATile* ARgsTileGameMode::GetTileFromPosition(const FVector& Position) const
 
 FVector2D ARgsTileGameMode::GetCoordinatesFromPosition(const FVector& Position) const
 {
-	FVector TmpPosition = (Position - TilesGridOffset) / SectorSize + TileGridSize;
+	FVector TmpPosition = (Position - TilesGridCenterPosition) / SectorSize + TileGridSize;
 	return FVector2D(FMath::RoundToInt(TmpPosition.X), FMath::RoundToInt(TmpPosition.Y));
 }
 
@@ -379,38 +379,39 @@ void ARgsTileGameMode::BeginPlay()
 	if (!PlayerPawn)
 		return;
 
-	TilesGridOffset = PlayerPawn->GetActorLocation();
-	int TileGridSizeOffset = TileGridSize % 2 == 0 ? 0 : 1;
-	TilesGridOffset.X += (TileGridSize + TileGridSizeOffset) * 100.f;
-	TilesGridOffset.Y += (TileGridSize + TileGridSizeOffset) * 100.f;
-	TilesGridOffset.Z = -(TilesGridOffset.Z - PlayerPawn->BaseEyeHeight / 2.f) + 16.f;
+	const int32 TileGridSizeOffset = TileGridSize % 2 == 0 ? 0 : 1;
+
+	TilesGridCenterPosition = PlayerPawn->GetActorLocation();
+	TilesGridCenterPosition.X += (TileGridSize + TileGridSizeOffset) * 100.f;
+	TilesGridCenterPosition.Y += (TileGridSize + TileGridSizeOffset) * 100.f;
+	TilesGridCenterPosition.Z = -(TilesGridCenterPosition.Z - PlayerPawn->GetDefaultHalfHeight());
 	
 	StartTileCoordinates = GetCoordinatesFromPosition(PlayerPawn->GetActorLocation());
-
 	SpawnTileGrid();
-	
 	CurrentPlayerTile = GetTileFromPosition(PlayerPawn->GetActorLocation());
-
 	GreenTilesFound = RedTilesFound = 0;
 
 }
 
-void ARgsTileGameMode::Tick(float DeltaTime)
+void ARgsTileGameMode::OnPlayerMoveOnTile(ATile* InTile)
 {
-	Super::Tick(DeltaTime);
+	// Player out of grid
+	if (InTile == nullptr)
+	{
+		EndGame(false, true);
+	}
 
-	ATile* T = GetTileFromPosition(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
-	if (T && CurrentPlayerTile && T != CurrentPlayerTile)
+	if (InTile && CurrentPlayerTile && InTile != CurrentPlayerTile)
 	{
 		CurrentPlayerTile->StepOff();
-	
-		// Player was on a blue Tile and now is stepping in a new Tile T
+
+		// Player was on a blue Tile and now is stepping in a new Tile InTile
 		if (CurrentPlayerTile->IsA(BlueTileBP))
 		{
 			RevealGreenTiles(false);
 		}
 
-		CurrentPlayerTile = T;
+		CurrentPlayerTile = InTile;
 
 		if (CurrentPlayerTile->IsA(RedTileBP) && !CurrentPlayerTile->HasBeenVisited())
 		{
@@ -439,11 +440,16 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 		CurrentPlayerTile->StepOn();
 	}
 
-	// Player out of grid
-	if (T == nullptr)
-	{
-		EndGame(false, true);
-	}
+}
+
+void ARgsTileGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+
+	ATile* T = GetTileFromPosition(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
+	OnPlayerMoveOnTile(T);
+
 	
 }
 

@@ -24,6 +24,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	
+
 	// Resets the game, by forcing the reload of the game level.
 	UFUNCTION(BlueprintCallable)
 	void ResetGame();
@@ -123,8 +125,8 @@ private:
 	// Creates the blue tile
 	void SpawnBlueTile();
 
-	// Checks if a green tile has at least one tile that is not red in it's neighborhood
-	bool IsGreenTileReachable(const int32 x, const int32 y) const;
+	// Checks if a tile has at least one tile that is not red in it's neighborhood (the eight tiles around it)
+	bool IsTileReachable(const int32 x, const int32 y) const;
 	
 	// Given a (x, y) coordinate deduce its associated position on the 3D Space
 	FVector Get3DSpaceTileLocation(const int32 x, const int32 y);
@@ -170,8 +172,11 @@ private:
 	/* Used to show all the green tiles that have not still been visited */
 	void RevealGreenTiles(bool bReveal);
 
+	/** Triggers the behavior of the InTile and ends the game if game ending conditions were found */
+	void OnPlayerMoveOnTile(ATile* InTile);
+
 	// Value calculated runtime to spawn tiles around starting platform
-	FVector TilesGridOffset;
+	FVector TilesGridCenterPosition;
 
 	// Tile where the player is currently located
 	TObjectPtr<ATile> CurrentPlayerTile;
