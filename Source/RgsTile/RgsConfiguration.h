@@ -5,7 +5,7 @@
 
 #ifndef WITH_DEBUG
 
-#define WITH_DEBUG 1 // change to 1 to enable debug
+#define WITH_DEBUG 0 // change to 1 to enable debug
 
 #endif
 
