@@ -4,9 +4,6 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 
 # Requirements
 
-- refactor the tick function in gamemode
- 
-- [Additional]if player jumping tile shouldn't become colored
 
 - [Additional] There should be some BP rules that constrain red tiles to be a certain number that doesn't prevent player win (there is no path for the player to win)
 
@@ -20,7 +17,7 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 
 # Currently working on
 
-- improve certain methods that now gets called continously
+
 
 # Doubts
 
@@ -62,3 +59,6 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 - add comment about return expected type where you pass null
 - stop input when game is over
 - [Additional] Add tile that turns blu and its behaviour
+- refactor the tick function in gamemode
+- improve certain methods that now gets called continously
+ 
