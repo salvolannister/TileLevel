@@ -4,18 +4,8 @@
 #include "RedTile.h"
 
 #include "Particles/ParticleSystem.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h"
-
-ARedTile::ARedTile()
-{
-
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> ExplosionParticles(TEXT("/Game/StarterContent/Particles/P_Explosion"));
-	if (ExplosionParticles.Object)
-	{
-		ParticleSystem = ExplosionParticles.Object;
-	}
-
-}
 
 void ARedTile::StepOn()
 {
@@ -23,16 +13,16 @@ void ARedTile::StepOn()
 
 	if (bVisited)
 		return;
-	
-	
 
 	if (ParticleSystem)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleSystem, GetActorLocation(), FRotator::ZeroRotator, true);
+		FVector ParticlePosition = GetActorLocation();
+		ParticlePosition.Z += 10.f;
+		UParticleSystemComponent* ParticleComponent = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleSystem, ParticlePosition, FRotator::ZeroRotator, true);
+		ParticleComponent->OnParticleDeath.AddDynamic(this, &ARedTile::HandleParticleDeath);
 	}
 
-	bVisited = true;
-	ShowTileColor(true);
+
 	
 }
 
@@ -51,6 +41,8 @@ void ARedTile::BeginPlay()
 	bVisited = false;
 }
 
+
+
 void ARedTile::ShowTileColor(bool bShowColor)
 {
 	if (bShowColor)
@@ -63,4 +55,10 @@ void ARedTile::ShowTileColor(bool bShowColor)
 		MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Silver));
 		MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 0.0f);
 	}
+}
+
+void ARedTile::HandleParticleDeath(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction)
+{
+	bVisited = true;
+	ShowTileColor(true);
 }

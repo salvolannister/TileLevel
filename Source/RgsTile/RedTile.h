@@ -19,8 +19,6 @@ class RGSTILE_API ARedTile : public ATile
 	GENERATED_BODY()
 	
 public: 
-	
-	ARedTile();
 
 	virtual void StepOn() override;
 
@@ -28,12 +26,17 @@ public:
 
 	virtual void ShowTileColor(bool bShowColor) override;
 
+	/** Particle system instance to plat with */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+	TObjectPtr<UParticleSystem> ParticleSystem;
+
 protected:
 
 	virtual void BeginPlay() override;
 
 private: 
 
-	/** Particle system instance to plat with */
-	TObjectPtr<UParticleSystem> ParticleSystem;
+	UFUNCTION(BlueprintCallable)
+	void HandleParticleDeath(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction);
+
 };
