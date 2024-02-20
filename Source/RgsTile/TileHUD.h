@@ -19,7 +19,7 @@ class RGSTILE_API ATileHUD : public AHUD
 
 public:
 
-	// Blueprint event triggered by code
+	// Adds end screen to viewport, implemented in TileGameHud blueprint
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
 	void ShowEndScreen();
 
@@ -27,7 +27,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void ShowEndScreenEvent(bool bIsWin, bool bForceRestart);
 	
-	// EndScreenWidget class used to spawn the End Screen panel in viewport
+	// EndScreenWidget class used to spawn the End Screen panel in viewport used by ShowEndScreen
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UEndScreenWidget> EndScreenWidget;
 

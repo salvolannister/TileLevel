@@ -200,6 +200,9 @@ private:
 
 	// Used to avoid spawning a blue, red, or green tile in the start position
 	FVector2D StartTileCoordinates;
+
+	// Pointer to access pawn position set in constructor
+	TWeakObjectPtr<APawn> RgsPawn;
 };
 
 

@@ -35,21 +35,21 @@ void ARgsTileGameMode::BeginPlay()
 	if (!PlayerController)
 		return;
 
-	const APawn* PlayerPawn = PlayerController->GetPawn();
+	RgsPawn = PlayerController->GetPawn();
 
-	if (!PlayerPawn)
+	if (!RgsPawn.Get())
 		return;
 
 	const int32 TileGridSizeOffset = TileGridSize % 2 == 0 ? 0 : 1;
 
-	TilesGridCenterPosition = PlayerPawn->GetActorLocation();
+	TilesGridCenterPosition = RgsPawn->GetActorLocation();
 	TilesGridCenterPosition.X += (TileGridSize + TileGridSizeOffset) * 100.f;
 	TilesGridCenterPosition.Y += (TileGridSize + TileGridSizeOffset) * 100.f;
-	TilesGridCenterPosition.Z = -(TilesGridCenterPosition.Z - PlayerPawn->GetDefaultHalfHeight());
+	TilesGridCenterPosition.Z = -(TilesGridCenterPosition.Z - RgsPawn->GetDefaultHalfHeight());
 	
-	StartTileCoordinates = GetCoordinatesFromPosition(PlayerPawn->GetActorLocation());
+	StartTileCoordinates = GetCoordinatesFromPosition(RgsPawn->GetActorLocation());
 	SpawnTileGrid();
-	CurrentPlayerTile = GetTileFromPosition(PlayerPawn->GetActorLocation());
+	CurrentPlayerTile = GetTileFromPosition(RgsPawn->GetActorLocation());
 	GreenTilesFound = RedTilesFound = 0;
 
 }
@@ -58,9 +58,19 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!RgsPawn.Get())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Pawn is null, this shouldn't happen"));
+		return;
+	}
 
-	ATile* T = GetTileFromPosition(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
-	OnPlayerMoveOnTile(T);
+	// Check player pos only if is velocity is not zero
+	if (!RgsPawn->GetVelocity().IsZero())
+	{
+		ATile* T = GetTileFromPosition(RgsPawn->GetActorLocation());
+		OnPlayerMoveOnTile(T);
+	}
+	
 
 	
 }
