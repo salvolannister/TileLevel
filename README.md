@@ -7,7 +7,6 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 
 - [Additional] There should be some BP rules that constrain red tiles to be a certain number that doesn't prevent player win (there is no path for the player to win)
 
-- [Additional] Add effect on tile StepOn: red tile shoud tremble, then show smoke and at the end show a red color
 
 - [Additional] Add effect on tile Green StepOn: green tile should tremble and after should show stars and later green color
 
@@ -61,4 +60,5 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 - [Additional] Add tile that turns blu and its behaviour
 - refactor the tick function in gamemode
 - improve certain methods that now gets called continously
+- [Additional] Add effect on tile StepOn: red tile shoud tremble, then show smoke and at the end show a red color
  
