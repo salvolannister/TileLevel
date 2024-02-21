@@ -22,7 +22,4 @@ public:
 
 	virtual void ShowTileColor(bool bShowColor) override;
 
-protected:
-
-	virtual void BeginPlay() override;
 };
