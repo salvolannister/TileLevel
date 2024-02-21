@@ -16,7 +16,6 @@ void ABlueTile::StepOff()
 {
 	Super::StepOff();
 
-
 	ShowTileColor(false);
 }
 

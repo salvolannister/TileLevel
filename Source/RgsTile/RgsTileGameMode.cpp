@@ -259,21 +259,14 @@ void ARgsTileGameMode::SpawnTileGrid()
 	{
 		TileGrid[i].SetNumZeroed(TileGridSize);
 	}
-	
-
-	// Add red tiles
-	
+		
 	SpawnRedTiles();
-
-	// Add green tiles
 
 	SpawnGreenTiles();
 	
-	// Add blue tile
-
 	SpawnBlueTile();
 
-	// spawn normal tiles
+	// Fills the empty spots in the grid with normal tiles
 	for (int32 x = 0; x < TileGridSize; x++)
 	{
 		for (int32 y = 0; y < TileGridSize; y++)

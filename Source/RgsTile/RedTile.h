@@ -22,15 +22,13 @@ public:
 
 	virtual void StepOn() override;
 
-	virtual void StepOff() override;
-
 	virtual void ShowTileColor(bool bShowColor) override;
 
 	/** Particle system instance to plat with */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	TObjectPtr<UParticleSystem> ParticleSystem;
 
-	/* Time after which you would like to make the tile turn red after the special effect is spawn*/
+	/* Delay time after which the tile turns red after the special effect is spawn */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Configuration", meta = (ClampMin = "0", UIMin = "0"))
 	float DelayTimeInSeconds = 0.3f; 
 
@@ -40,7 +38,7 @@ protected:
 
 private: 
 
-    /* Used to enable showing the effect before the change of state */
+    /* Used to enable showing the particle system before the change of state */
 	UFUNCTION()
 	void UpdateTileStateToVisitedDelayed();
 

@@ -19,16 +19,11 @@ void ARedTile::StepOn()
 	{
 		FVector ParticlePosition = GetActorLocation();
 		ParticlePosition.Z += 20.f;
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleSystem, ParticlePosition, FRotator::ZeroRotator, false);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleSystem, ParticlePosition, FRotator::ZeroRotator, true);
 		GetWorldTimerManager().SetTimer(UpdateTileToVisitedTimerHandle, this, &ARedTile::UpdateTileStateToVisitedDelayed, DelayTimeInSeconds, false);
 
 	}
 	
-}
-
-void ARedTile::StepOff()
-{
-	Super::StepOff();
 }
 
 

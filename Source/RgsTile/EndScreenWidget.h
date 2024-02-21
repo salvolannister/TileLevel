@@ -13,6 +13,8 @@ class UText;
 /**
  * Manages open and close for the EndScreen panel blueprint
  * with animations and title updates.
+ * Meanwhile the Update of the number of green tiles and red tiles collected texts
+ * is made inside the blueprint
  */
 UCLASS(BlueprintType, Blueprintable, meta = (DisableNativeTick))
 class RGSTILE_API UEndScreenWidget : public UUserWidget

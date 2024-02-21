@@ -7,8 +7,7 @@ void ANormalTile::StepOn()
 {
 	Super::StepOn();
 
-	MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Silver));
-	MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 1.0f);
+	ShowTileColor(true);
 
 }
 
@@ -16,8 +15,7 @@ void ANormalTile::StepOff()
 {
 	Super::StepOff();
 
-	MeshComponent->SetVectorParameterValueOnMaterials(FName("TileBaseColor"), FVector(FColor::Silver));
-	MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 0.0f);
+	ShowTileColor(false);
 }
 
 void ANormalTile::ShowTileColor(bool bShowColor)
