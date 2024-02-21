@@ -35,5 +35,7 @@ public:
 	
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-
+private:
+	/*TimerHandle to close the EndScreen panel*/
+	FTimerHandle CloseEndScreenPanelTimerHandle;
 };

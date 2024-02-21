@@ -17,6 +17,10 @@ void ATileHUD::ShowEndScreenEvent(bool bIsWin, bool bForceRestart)
 	{
 		EndScreenWidget->OpenEndScreen(bIsWin);
 	}
+
+	GetWorldTimerManager().SetTimer(CloseEndScreenPanelTimerHandle, [this]() { EndScreenWidget->CloseEndScreen(); }, 4.f, false);
+
+	
 	
 }
 
