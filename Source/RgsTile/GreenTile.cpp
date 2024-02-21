@@ -14,20 +14,6 @@ void AGreenTile::StepOn()
 	ShowTileColor(true);
 }
 
-void AGreenTile::StepOff()
-{
-	Super::StepOff();
-}
-
-
-void AGreenTile::BeginPlay()
-{
-	Super::BeginPlay();
-
-	TileType = ETileType::Green;
-	bVisited = false;
-}
-
 
 void AGreenTile::ShowTileColor(bool bShowColor)
 {

@@ -33,13 +33,3 @@ void ABlueTile::ShowTileColor(bool bShowColor)
 		MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 0.f);
 	}
 }
-
-
-void ABlueTile::BeginPlay()
-{
-	Super::BeginPlay();
-
-	TileType = ETileType::Blue;
-
-	bVisited = false;
-}

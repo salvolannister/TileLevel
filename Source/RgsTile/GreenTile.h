@@ -18,12 +18,6 @@ public:
 
 	virtual void StepOn() override;
 
-	virtual void StepOff() override;
-
 	virtual void ShowTileColor(bool bShowColor) override;
-
-protected:
-
-	virtual void BeginPlay() override;
 
 };

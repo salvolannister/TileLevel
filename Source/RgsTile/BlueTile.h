@@ -24,5 +24,4 @@ public:
 
 	virtual void ShowTileColor(bool bShowColor) override;
 
-	virtual void BeginPlay() override;
 };

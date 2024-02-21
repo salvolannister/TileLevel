@@ -32,15 +32,6 @@ void ARedTile::StepOff()
 }
 
 
-void ARedTile::BeginPlay()
-{
-	Super::BeginPlay();
-
-	TileType =  ETileType::Red;
-
-	bVisited = false;
-}
-
 void ARedTile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);

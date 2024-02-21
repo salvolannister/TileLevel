@@ -46,18 +46,6 @@ void ATile::BeginPlay()
 	TilePosX = TilePosY = -1;
 }
 
-
-void ATile::SetType(ETileType Type)
-{
-	TileType = Type;
-}
-
-ETileType ATile::GetType() const
-{
-	return TileType;
-}
-
-
 void ATile::SetRenderText(const int32 x, const int32 y)
 {
 	if (!TileCoordinateText)

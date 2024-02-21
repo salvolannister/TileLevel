@@ -20,14 +20,6 @@ void ANormalTile::StepOff()
 	MeshComponent->SetScalarParameterValueOnMaterials(FName("TileEmission"), 0.0f);
 }
 
-
-void ANormalTile::BeginPlay()
-{
-	Super::BeginPlay();
-
-	TileType = ETileType::Normal;
-}
-
 void ANormalTile::ShowTileColor(bool bShowColor)
 {
 	if (bShowColor)

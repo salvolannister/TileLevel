@@ -429,7 +429,7 @@ bool ARgsTileGameMode::IsTileReachable(const int32 x, const int32 y) const
 	{
 		if (TileGrid.IsValidIndex(x) && TileGrid[x].IsValidIndex(y))
 		{
-			return (TileGrid[x][y] == nullptr || TileGrid[x][y]->GetType() != ETileType::Red);
+			return (TileGrid[x][y] == nullptr || TileGrid[x][y].IsA(RedTileBP));
 		}
 
 		return false;
