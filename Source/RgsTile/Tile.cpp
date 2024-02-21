@@ -47,11 +47,6 @@ void ATile::BeginPlay()
 }
 
 
-void ATile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void ATile::SetType(ETileType Type)
 {
 	TileType = Type;
@@ -60,16 +55,6 @@ void ATile::SetType(ETileType Type)
 ETileType ATile::GetType() const
 {
 	return TileType;
-}
-
-void ATile::StepOn()
-{
-
-}
-
-void ATile::StepOff()
-{
-	
 }
 
 
@@ -86,11 +71,6 @@ void ATile::SetRenderText(const int32 x, const int32 y)
 	);
 }
 
-
-void ATile::ShowTileColor(bool bShowColor)
-{
-
-}
 
 bool ATile::HasBeenVisited() const
 {

@@ -35,8 +35,6 @@ protected:
 
 public:
 
-	virtual void Tick(float DeltaTime) override;
-
 	// Sets the type of this tile.
 	void SetType(ETileType Type);
 
@@ -44,16 +42,16 @@ public:
 	ETileType GetType() const;
 
 	// Method to call to notify when the player steps on this tile.
-	virtual void StepOn();
+	virtual void StepOn() {};
 
 	// Method to call to notify when the player steps off this tile.
-	virtual void StepOff();
+	virtual void StepOff() {};
 
 	// Debug: Writes the coordinates x and y on the corresponding tile on the TileCoordinateText
 	void SetRenderText(const int32 x, const int32 y);
 
 	// Show tile color without visiting it 
-	virtual void ShowTileColor(bool bShowColor);
+	virtual void ShowTileColor(bool bShowColor){};
 
 	// Tells if the player visited or not the tile
 	virtual bool HasBeenVisited() const;

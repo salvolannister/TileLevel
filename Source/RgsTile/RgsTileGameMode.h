@@ -85,7 +85,7 @@ public:
 	// Defines the size of the tile grid to generate.
 	// Must be at least 3.
 	// Can be changed in the "TileGameModeBP" blueprint.
-	UPROPERTY(EditDefaultsOnly, Category = Configuration)
+	UPROPERTY(EditDefaultsOnly, Category = Configuration, meta = (ClampMin = "3", UIMin = "3"))
 	int32 TileGridSize = 10;
 
 	// Defines the number of Green Tiles to randomly place in the tile grid.

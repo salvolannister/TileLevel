@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright(c) Forge Reply. All Rights Reserved.
 
 
 #include "BlueTile.h"
