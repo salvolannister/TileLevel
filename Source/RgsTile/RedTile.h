@@ -30,13 +30,22 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effects")
 	TObjectPtr<UParticleSystem> ParticleSystem;
 
+	/* Time after which you would like to make the tile turn red after the special effect is spawn*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Configuration", meta = (ClampMin = "0", UIMin = "0"))
+	float DelayTimeInSeconds = 0.3f; 
+
 protected:
 
 	virtual void BeginPlay() override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 private: 
 
-	UFUNCTION(BlueprintCallable)
-	void HandleParticleDeath(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction);
+    /* Used to enable showing the effect before the change of state */
+	UFUNCTION()
+	void UpdateTileStateToVisitedDelayed();
+
+	FTimerHandle UpdateTileToVisitedTimerHandle;
 
 };

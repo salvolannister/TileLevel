@@ -14,15 +14,15 @@ void ARedTile::StepOn()
 	if (bVisited)
 		return;
 
+
 	if (ParticleSystem)
 	{
 		FVector ParticlePosition = GetActorLocation();
-		ParticlePosition.Z += 10.f;
-		UParticleSystemComponent* ParticleComponent = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleSystem, ParticlePosition, FRotator::ZeroRotator, true);
-		ParticleComponent->OnParticleDeath.AddDynamic(this, &ARedTile::HandleParticleDeath);
+		ParticlePosition.Z += 20.f;
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleSystem, ParticlePosition, FRotator::ZeroRotator, false);
+		GetWorldTimerManager().SetTimer(UpdateTileToVisitedTimerHandle, this, &ARedTile::UpdateTileStateToVisitedDelayed, DelayTimeInSeconds, false);
+
 	}
-
-
 	
 }
 
@@ -41,7 +41,13 @@ void ARedTile::BeginPlay()
 	bVisited = false;
 }
 
+void ARedTile::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
 
+	// Ensure to clear the timer handle to avoid calling functions on a potentially destroyed object
+	GetWorldTimerManager().ClearTimer(UpdateTileToVisitedTimerHandle);
+}
 
 void ARedTile::ShowTileColor(bool bShowColor)
 {
@@ -57,8 +63,10 @@ void ARedTile::ShowTileColor(bool bShowColor)
 	}
 }
 
-void ARedTile::HandleParticleDeath(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction)
+
+void ARedTile::UpdateTileStateToVisitedDelayed()
 {
-	bVisited = true;
 	ShowTileColor(true);
+	bVisited = true;
+
 }
