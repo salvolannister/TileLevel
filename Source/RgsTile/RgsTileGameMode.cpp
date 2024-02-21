@@ -2,15 +2,15 @@
 
 #include "RgsTileGameMode.h"
 
-#include "UObject/ConstructorHelpers.h"
-#include "Kismet/GameplayStatics.h"
-#include "Math/UnrealMathUtility.h"
+#include <UObject/ConstructorHelpers.h>
+#include <Kismet/GameplayStatics.h>
+#include <Math/UnrealMathUtility.h>
+#include <GameFramework/Character.h>
 
 #include "RgsTileCharacter.h"
 #include "RgsConfiguration.h"
 #include "Tile.h"
 #include "TileHUD.h"
-#include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/Character.h>
 
 
 
