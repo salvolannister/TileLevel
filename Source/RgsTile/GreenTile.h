@@ -2,8 +2,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+
 #include "Tile.h"
+
 #include "GreenTile.generated.h"
 
 /**

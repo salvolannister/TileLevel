@@ -1,11 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright(c) Forge Reply. All Rights Reserved.
 
 
 #include "RedTile.h"
 
-#include "Particles/ParticleSystem.h"
-#include "Particles/ParticleSystemComponent.h"
-#include "../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include <Particles/ParticleSystem.h>
+#include <Particles/ParticleSystemComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 void ARedTile::StepOn()
 {

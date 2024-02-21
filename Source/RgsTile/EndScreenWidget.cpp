@@ -4,8 +4,8 @@
 #include "EndScreenWidget.h"
 
 
-#include "Internationalization/Text.h" 
-#include "Components/TextBlock.h"
+#include <Internationalization/Text.h>
+#include <Components/TextBlock.h>
 
 void UEndScreenWidget::OpenEndScreen(bool bIsWin)
 {

@@ -2,20 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include <CoreMinimal.h>
+#include <GameFramework/Actor.h>
 
 #include "Tile.generated.h"
 
-
-UENUM()
-enum class ETileType : uint8
-{
-	Normal,
-	Green,
-	Red,
-	Blue
-};
 
 class UTextRenderComponent;
 
@@ -34,12 +25,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-
-	// Sets the type of this tile.
-	void SetType(ETileType Type);
-
-	// Returns the type of this tile.
-	ETileType GetType() const;
 
 	// Method to call to notify when the player steps on this tile.
 	virtual void StepOn() {};
@@ -72,8 +57,6 @@ public:
 
 protected:
 
-	UPROPERTY(EditAnywhere)
-	ETileType TileType = ETileType::Normal;
 
 	// Text Render Component for displaying debugging information above the tile.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Visual, meta = (AllowPrivateAccess = "true"))

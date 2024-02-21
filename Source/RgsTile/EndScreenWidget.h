@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include <CoreMinimal.h>
+#include <Blueprint/UserWidget.h>
 
 #include "EndScreenWidget.generated.h"
 
@@ -36,6 +36,7 @@ public:
 	/** Animation defined in the blueprint widget where the panel scales 0 to full screen size */
 	UPROPERTY(BlueprintReadWrite, Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> Animation_PanelPopUp;
+
 
 	/**
 	* Set the visibility to Not-Hit-Testable, plays the AnimationPopUp 
