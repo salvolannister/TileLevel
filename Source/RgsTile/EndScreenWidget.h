@@ -46,4 +46,6 @@ public:
 	
 	/** Plays the AnimationPopUp in reverse state and set the visibility to collapsed */
 	void CloseEndScreen();
+
+
 };

@@ -34,8 +34,6 @@ void UEndScreenWidget::OpenEndScreen(bool bIsWin)
 
 void UEndScreenWidget::CloseEndScreen()
 {
-	PlayAnimationReverse(Animation_PanelPopUp);
-
-	SetVisibility(ESlateVisibility::Collapsed);
+	PlayAnimationReverse(Animation_PanelPopUp, true);
 
 }
