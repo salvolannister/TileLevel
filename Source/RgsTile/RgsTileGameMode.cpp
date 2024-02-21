@@ -447,7 +447,7 @@ bool ARgsTileGameMode::IsTileReachable(const int32 x, const int32 y) const
 	return SafeTileNumber > 0;
 }
 
-FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y)
+FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y) const 
 {
 	FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(TileGridSize),
 		static_cast<float>(y) - static_cast<float>(TileGridSize),

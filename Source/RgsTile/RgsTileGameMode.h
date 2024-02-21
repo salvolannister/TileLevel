@@ -127,7 +127,7 @@ private:
 	bool IsTileReachable(const int32 x, const int32 y) const;
 	
 	// Given a (x, y) coordinate deduce its associated position on the 3D Space
-	FVector Get3DSpaceTileLocation(const int32 x, const int32 y);
+	FVector Get3DSpaceTileLocation(const int32 x, const int32 y) const;
 
 	/**
 	 * Get the associated tile at a 3D position.
