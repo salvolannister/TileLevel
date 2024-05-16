@@ -1,5 +1,3 @@
-// Copyright(c) Forge Reply. All Rights Reserved.
-
 #pragma once
 
 #include <CoreMinimal.h>
@@ -86,7 +84,7 @@ public:
 	// Must be at least 3.
 	// Can be changed in the "TileGameModeBP" blueprint.
 	UPROPERTY(EditDefaultsOnly, Category = Configuration, meta = (ClampMin = "3", UIMin = "3"))
-	int32 TileGridSize = 10;
+	int32 EdgeGridSize = 10;
 
 	// Defines the number of Green Tiles to randomly place in the tile grid.
 	// Must be at least 1.
@@ -134,7 +132,7 @@ private:
 	 *
 	 * Retrieves the tile associated with a given 3D position. Returns nullptr if no tile is found.
 	 *
-	 * @param Position The 3D position in space.
+	 * @param InPosition The 3D position in space.
 	 * @return The associated tile, or nullptr if none.
 	*/
 	ATile* GetTileFromPosition(const FVector& InPosition) const;
@@ -145,7 +143,7 @@ private:
 
 	// Finds the minimum distance in number of tiles to visit in order to reach one of the Tiles still not visited 
 	// from a Tile with coordinate of cell x and y
-	int32 GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& InTiles) const;
+	int32 GetClosestTileDistance(const int32 X, const int32 Y, const TArray<TObjectPtr<ATile>>& InTiles) const;
 
 	// Tells if the coordinate (x, y) are the one from the player start position tile
 	bool IsNotStartTile(const int32 x, const int32 y) const;

@@ -12,6 +12,6 @@
 
 #ifndef SHOW_TILES_COLOR
 
-#define SHOW_TILES_COLOR 1 // show all tiles color at start of the game 
+#define SHOW_TILES_COLOR 0 // show all tiles color at start of the game 
 
 #endif // !SHOW_TILES_COLOR

@@ -48,10 +48,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Visual, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* MeshComponent;
 
-	// X position of the tile inside the grid, values should be (0, TileGridSize - 1)
+	// X position of the tile inside the grid, values should be (0, EdgeGridSize - 1)
 	UPROPERTY(VisibleAnywhere)
 	int32 TilePosX;
-	// Y position of the tile inside the grid, values should be (0, TileGridSize - 1)
+	// Y position of the tile inside the grid, values should be (0, EdgeGridSize - 1)
 	UPROPERTY(VisibleAnywhere)
 	int32 TilePosY;
 

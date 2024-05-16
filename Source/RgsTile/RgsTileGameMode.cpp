@@ -1,5 +1,3 @@
-// Copyright(c) Forge Reply. All Rights Reserved.
-
 #include "RgsTileGameMode.h"
 
 #include <UObject/ConstructorHelpers.h>
@@ -17,7 +15,7 @@
 ARgsTileGameMode::ARgsTileGameMode()
 {
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPersonCPP/Blueprints/ThirdPersonCharacter"));
-	if (PlayerPawnBPClass.Class != NULL)
+	if (PlayerPawnBPClass.Class != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
@@ -40,11 +38,11 @@ void ARgsTileGameMode::BeginPlay()
 	if (!RgsPawn.Get())
 		return;
 
-	const int32 TileGridSizeOffset = TileGridSize % 2 == 0 ? 0 : 1;
+	const int32 TileGridSizeOffset = EdgeGridSize % 2 == 0 ? 0 : 1;
 
 	TilesGridCenterPosition = RgsPawn->GetActorLocation();
-	TilesGridCenterPosition.X += (TileGridSize + TileGridSizeOffset) * 100.f;
-	TilesGridCenterPosition.Y += (TileGridSize + TileGridSizeOffset) * 100.f;
+	TilesGridCenterPosition.X += (EdgeGridSize + TileGridSizeOffset) * 100.f;
+	TilesGridCenterPosition.Y += (EdgeGridSize + TileGridSizeOffset) * 100.f;
 	TilesGridCenterPosition.Z = -(TilesGridCenterPosition.Z - RgsPawn->GetDefaultHalfHeight());
 	
 	StartTileCoordinates = GetCoordinatesFromPosition(RgsPawn->GetActorLocation());
@@ -85,7 +83,7 @@ void ARgsTileGameMode::OnPlayerMoveOnTile(ATile* InTile)
 		EndGame(false, true);
 	}
 
-	if (InTile && CurrentPlayerTile && InTile != CurrentPlayerTile)
+	if (CurrentPlayerTile && InTile != CurrentPlayerTile)
 	{
 		CurrentPlayerTile->StepOff();
 
@@ -160,17 +158,16 @@ void ARgsTileGameMode::SetPlayerInputModeToUIOnly(bool bUIOnly)
 	if (!PlayerController)
 		return;
 
-	FInputModeUIOnly InputModeUI;
-	FInputModeGameOnly InputModeGame;
-
 	if (bUIOnly)
 	{
+		FInputModeUIOnly InputModeUI;
 		PlayerController->SetIgnoreMoveInput(true);
 		PlayerController->SetInputMode(InputModeUI);
 
 	}
 	else
 	{
+		FInputModeGameOnly InputModeGame;
 		PlayerController->SetIgnoreMoveInput(false);
 		PlayerController->SetInputMode(InputModeGame);
 	}
@@ -210,24 +207,24 @@ int32 ARgsTileGameMode::GetClosestRedTileDistance()
 	return GetClosestTileDistance(CurrentPlayerTile->TilePosX, CurrentPlayerTile->TilePosY, RedTilesArray);
 }
 
-int32 ARgsTileGameMode::GetClosestTileDistance(const int32 x, const int32 y, const TArray<TObjectPtr<ATile>>& InTiles) const
+int32 ARgsTileGameMode::GetClosestTileDistance(const int32 X, const int32 Y, const TArray<TObjectPtr<ATile>>& InTiles) const
 {
 	/* To determine the minimum, we consider the sum of the distance module between the distances in the x and y directions.
-	 * An element on the diagonal e.g. (x + 1, y + 1) of the current coordinates (x, y) won't be reachable through one step of our current pawn
+	 * An element on the diagonal e.g. (x + 1, y + 1) of the current coordinates (x, y) won't be reachable through one step of our current pawn,
 	 * so it is considered at distance two instead of one
 	 */
 
 	if (InTiles.Num() == 0)
 		return -1;
 
-	int32 MinDistanceFound = TileGridSize;
+	int32 MinDistanceFound = EdgeGridSize;
 
 	for (const ATile* TilePtr : InTiles)
 	{
 		if (TilePtr && !TilePtr->HasBeenVisited())
 		{
-			int32 DistanceOnX = FMath::Abs(x - TilePtr->TilePosX);
-			int32 DistanceOnY = FMath::Abs( y - TilePtr->TilePosY);
+			int32 DistanceOnX = FMath::Abs(X - TilePtr->TilePosX);
+			int32 DistanceOnY = FMath::Abs( Y - TilePtr->TilePosY);
 
 			int32 NumTileToReachPos = DistanceOnX + DistanceOnY;
 
@@ -254,10 +251,10 @@ void ARgsTileGameMode::SpawnTileGrid()
 	if(TileGrid.Num() > 0  && TileGrid[0].Num() > 0)
 		return;
 
-	TileGrid.SetNum(TileGridSize);
-	for (int32 i = 0; i < TileGridSize; ++i)
+	TileGrid.SetNum(EdgeGridSize);
+	for (int32 i = 0; i < EdgeGridSize; ++i)
 	{
-		TileGrid[i].SetNumZeroed(TileGridSize);
+		TileGrid[i].SetNumZeroed(EdgeGridSize);
 	}
 		
 	SpawnRedTiles();
@@ -266,10 +263,11 @@ void ARgsTileGameMode::SpawnTileGrid()
 	
 	SpawnBlueTile();
 
-	// Fills the empty spots in the grid with normal tiles
-	for (int32 x = 0; x < TileGridSize; x++)
+	// Fills the empty spots in the grid with normal tiles starting from the top right tile
+	// going to the bottom left one
+	for (int32 x = 0; x < EdgeGridSize; x++)
 	{
-		for (int32 y = 0; y < TileGridSize; y++)
+		for (int32 y = 0; y < EdgeGridSize; y++)
 		{
 			if (TileGrid[x][y] == nullptr)
 			{
@@ -290,9 +288,9 @@ void ARgsTileGameMode::SpawnTileGrid()
 
 void ARgsTileGameMode::ShowColoredTiles()
 {
-	for (int i = 0; i < TileGridSize; i++)
+	for (int i = 0; i < EdgeGridSize; i++)
 	{
-		for (int ii = 0; ii < TileGridSize; ii++)
+		for (int ii = 0; ii < EdgeGridSize; ii++)
 		{
 			TileGrid[i][ii]->ShowTileColor(true);
 		}
@@ -309,8 +307,8 @@ void ARgsTileGameMode::SpawnGreenTiles()
 
 	for (int32 i = GreenTilesToSpawn; i > 0; i--)
 	{
-		int32 x = FMath::RandRange(0, TileGridSize - 1);
-		int32 y = FMath::RandRange(0, TileGridSize - 1);
+		int32 x = FMath::RandRange(0, EdgeGridSize - 1);
+		int32 y = FMath::RandRange(0, EdgeGridSize - 1);
 
 
 		if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y) && IsTileReachable(x, y))
@@ -353,8 +351,8 @@ void ARgsTileGameMode::SpawnBlueTile()
 	bool bBlueTileSpawned = false;
 	while (NAttempts > 0 && !bBlueTileSpawned)
 	{
-		int32 x = FMath::RandRange(0, TileGridSize - 1);
-		int32 y = FMath::RandRange(0, TileGridSize - 1);
+		int32 x = FMath::RandRange(0, EdgeGridSize - 1);
+		int32 y = FMath::RandRange(0, EdgeGridSize - 1);
 
 		if (!TileGrid[x][y] && IsNotStartTile(x, y) && IsTileReachable(x, y))
 		{
@@ -387,8 +385,8 @@ void ARgsTileGameMode::SpawnRedTiles()
 
 	for (int32 i = RedTilesToSpawn; i > 0; i--)
 	{
-	   int32 x = FMath::RandRange(0, TileGridSize - 1);
-	   int32 y = FMath::RandRange(0, TileGridSize - 1);
+	   int32 x = FMath::RandRange(0, EdgeGridSize - 1);
+	   int32 y = FMath::RandRange(0, EdgeGridSize - 1);
 
 	  
 	   if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y))
@@ -442,8 +440,8 @@ bool ARgsTileGameMode::IsTileReachable(const int32 x, const int32 y) const
 
 FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y) const 
 {
-	FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(TileGridSize),
-		static_cast<float>(y) - static_cast<float>(TileGridSize),
+	FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(EdgeGridSize),
+		static_cast<float>(y) - static_cast<float>(EdgeGridSize),
 		0.f) * SectorSize * 1.f + TilesGridCenterPosition;
 	return SpawnLocation;
 }
@@ -467,7 +465,7 @@ ATile* ARgsTileGameMode::GetTileFromPosition(const FVector& Position) const
 #endif
 
 
-	if (x < 0 || x >= TileGridSize || y < 0 || y >= TileGridSize)
+	if (x < 0 || x >= EdgeGridSize || y < 0 || y >= EdgeGridSize)
 	{
 
 #if WITH_DEBUG
@@ -500,7 +498,7 @@ ATile* ARgsTileGameMode::GetTileFromPosition(const FVector& Position) const
 
 FVector2D ARgsTileGameMode::GetCoordinatesFromPosition(const FVector& Position) const
 {
-	FVector TmpPosition = (Position - TilesGridCenterPosition) / SectorSize + TileGridSize;
+	FVector TmpPosition = (Position - TilesGridCenterPosition) / SectorSize + EdgeGridSize;
 	return FVector2D(FMath::RoundToInt(TmpPosition.X), FMath::RoundToInt(TmpPosition.Y));
 }
 
