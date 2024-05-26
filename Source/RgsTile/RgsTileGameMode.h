@@ -98,7 +98,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Configuration, meta = (ClampMin = "1", UIMin = "1"))
 	int32 RedTilesToSpawn = 5;
 
-	// Dimension of the tile
+	// Dimension of the tile in centimiters
 	UPROPERTY(EditDefaultsOnly, Category = Configuration)
 	float SectorSize = 200.f;
 
@@ -122,10 +122,10 @@ private:
 	void SpawnBlueTile();
 
 	// Checks if a tile has at least one tile that is not red in its surrounding (the two tiles down/up the center tile and the two on the right/left side)
-	bool IsTileReachable(const int32 x, const int32 y) const;
+	bool IsTileReachable(const int32 X, const int32 Y) const;
 	
 	// Given a (x, y) coordinate deduce its associated position on the 3D Space
-	FVector Get3DSpaceTileLocation(const int32 x, const int32 y) const;
+	FVector Get3DSpaceTileLocation(const int32 X, const int32 Y) const;
 
 	/**
 	 * Get the associated tile at a 3D position.
@@ -146,7 +146,7 @@ private:
 	int32 GetClosestTileDistance(const int32 X, const int32 Y, const TArray<TObjectPtr<ATile>>& InTiles) const;
 
 	// Tells if the coordinate (x, y) are the one from the player start position tile
-	bool IsNotStartTile(const int32 x, const int32 y) const;
+	bool IsNotStartTile(const int32 X, const int32 Y) const;
 
 	/**
 	 * Called when the gameplay is over, either due to collecting all red or green tiles or

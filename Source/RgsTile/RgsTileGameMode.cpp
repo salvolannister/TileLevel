@@ -39,10 +39,10 @@ void ARgsTileGameMode::BeginPlay()
 		return;
 
 	const int32 TileGridSizeOffset = EdgeGridSize % 2 == 0 ? 0 : 1;
-
+	const float HalfSectorSize = SectorSize/2.f;
 	TilesGridCenterPosition = RgsPawn->GetActorLocation();
-	TilesGridCenterPosition.X += (EdgeGridSize + TileGridSizeOffset) * 100.f;
-	TilesGridCenterPosition.Y += (EdgeGridSize + TileGridSizeOffset) * 100.f;
+	TilesGridCenterPosition.X += (EdgeGridSize + TileGridSizeOffset) * HalfSectorSize;
+	TilesGridCenterPosition.Y += (EdgeGridSize + TileGridSizeOffset) * HalfSectorSize;
 	TilesGridCenterPosition.Z = -(TilesGridCenterPosition.Z - RgsPawn->GetDefaultHalfHeight());
 	
 	StartTileCoordinates = GetCoordinatesFromPosition(RgsPawn->GetActorLocation());
@@ -62,7 +62,7 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 		return;
 	}
 
-	// Check player pos only if is velocity is not zero
+	// Check to avoid making calculation every frame
 	if (!RgsPawn->GetVelocity().IsZero())
 	{
 		ATile* T = GetTileFromPosition(RgsPawn->GetActorLocation());
@@ -77,7 +77,7 @@ void ARgsTileGameMode::Tick(float DeltaTime)
 
 void ARgsTileGameMode::OnPlayerMoveOnTile(ATile* InTile)
 {
-	// Player out of grid
+	// If the Tile is null the player is out of the grid
 	if (InTile == nullptr)
 	{
 		EndGame(false, true);
@@ -87,7 +87,8 @@ void ARgsTileGameMode::OnPlayerMoveOnTile(ATile* InTile)
 	{
 		CurrentPlayerTile->StepOff();
 
-		// Player was on a blue Tile and now is stepping in a new Tile InTile
+		// To avoid holding a reference of the GameMode in the blue tile class we call what
+		// the tile should do for the step off here
 		if (CurrentPlayerTile->IsA(BlueTileBP))
 		{
 			RevealGreenTiles(false);
@@ -132,6 +133,10 @@ void ARgsTileGameMode::ResetGame()
 
 void ARgsTileGameMode::EndGame(bool bIsWin, bool bForceRestart)
 {
+	if (bForceRestart)
+	{
+		ResetGame();
+	}
 	
 	SetPlayerInputModeToUIOnly(true);
 
@@ -143,12 +148,6 @@ void ARgsTileGameMode::EndGame(bool bIsWin, bool bForceRestart)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No subscribers to OnEndGameDelegate"));
 	}
-	
-	if (bForceRestart)
-	{
-		ResetGame();
-	}
-	
 }
 
 void ARgsTileGameMode::SetPlayerInputModeToUIOnly(bool bUIOnly)
@@ -411,7 +410,7 @@ void ARgsTileGameMode::SpawnRedTiles()
 #pragma endregion 
 
 #pragma region Tiles Coordinates
-bool ARgsTileGameMode::IsTileReachable(const int32 x, const int32 y) const
+bool ARgsTileGameMode::IsTileReachable(const int32 X, const int32 Y) const
 {
 	// Looks if there is at least one tile that can lead to the green Tile without pressing a red tile
     int32 SafeTileNumber = 0;
@@ -426,8 +425,8 @@ bool ARgsTileGameMode::IsTileReachable(const int32 x, const int32 y) const
 		return false;
 	};
 
-	if(IsTileSafeToCross(x + 1, y) || IsTileSafeToCross(x - 1, y) ||
-		IsTileSafeToCross(x, y + 1) || IsTileSafeToCross(x, y -1))
+	if(IsTileSafeToCross(X + 1, Y) || IsTileSafeToCross(X - 1, Y) ||
+		IsTileSafeToCross(X, Y + 1) || IsTileSafeToCross(X, Y -1))
 	{
 		SafeTileNumber++;
 	}
@@ -438,10 +437,10 @@ bool ARgsTileGameMode::IsTileReachable(const int32 x, const int32 y) const
 	return SafeTileNumber > 0;
 }
 
-FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 x, const int32 y) const 
+FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 X, const int32 Y) const 
 {
-	FVector SpawnLocation = FVector(static_cast<float>(x) - static_cast<float>(EdgeGridSize),
-		static_cast<float>(y) - static_cast<float>(EdgeGridSize),
+	FVector SpawnLocation = FVector(static_cast<float>(X) - static_cast<float>(EdgeGridSize),
+		static_cast<float>(Y) - static_cast<float>(EdgeGridSize),
 		0.f) * SectorSize * 1.f + TilesGridCenterPosition;
 	return SpawnLocation;
 }
@@ -516,10 +515,10 @@ void ARgsTileGameMode::RevealGreenTiles(bool bReveal)
 	}
 }
 
-bool ARgsTileGameMode::IsNotStartTile(const int32 x, const int32 y) const
+bool ARgsTileGameMode::IsNotStartTile(const int32 X, const int32 Y) const
 {
 	
-	if (x != StartTileCoordinates.X || y != StartTileCoordinates.Y)
+	if (X != StartTileCoordinates.X || Y != StartTileCoordinates.Y)
 		return true;
 	else
 		return false;
