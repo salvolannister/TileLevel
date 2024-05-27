@@ -98,7 +98,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Configuration, meta = (ClampMin = "1", UIMin = "1"))
 	int32 RedTilesToSpawn = 5;
 
-	// Dimension of the tile in centimiters
+	// Dimension of the tile in centimeters
 	UPROPERTY(EditDefaultsOnly, Category = Configuration)
 	float SectorSize = 200.f;
 
@@ -120,7 +120,8 @@ private:
 
 	// Creates the blue tile
 	void SpawnBlueTile();
-
+	
+	ATile* SpawnColoredTile(const TSubclassOf<ATile> ColoredTileClass, const int32 InX, const int32 InY);
 	// Checks if a tile has at least one tile that is not red in its surrounding (the two tiles down/up the center tile and the two on the right/left side)
 	bool IsTileReachable(const int32 X, const int32 Y) const;
 	
@@ -201,6 +202,9 @@ private:
 
 	// Pointer to access pawn position set in constructor
 	TWeakObjectPtr<APawn> RgsPawn;
+	// Array of indexes of EdgeTileDim^2 storing random indexes generated runtime for positioning colored tiles
+	TArray<int32> RandomGridIndexes;
+
 };
 
 

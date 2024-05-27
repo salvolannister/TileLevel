@@ -255,28 +255,36 @@ void ARgsTileGameMode::SpawnTileGrid()
 	{
 		TileGrid[i].SetNumZeroed(EdgeGridSize);
 	}
-		
+	
+	const int32 TotalTiles = EdgeGridSize*EdgeGridSize;
+	RandomGridIndexes.Reserve(TotalTiles);
+	FMath::RandInit(FDateTime::Now().GetMillisecond()); 
+	for(int i = 0; i < TotalTiles; i++)
+	{
+		RandomGridIndexes.Add(i);
+	}
+
+	for(int i = 0; i < RandomGridIndexes.Num(); i++)
+	{
+		const int32 RandIndex = FMath::RandRange(i, TotalTiles - 1);
+		RandomGridIndexes.Swap(i, RandIndex);
+	}
+	
 	SpawnRedTiles();
 
 	SpawnGreenTiles();
 	
 	SpawnBlueTile();
 
-	// Fills the empty spots in the grid with normal tiles starting from the top right tile
-	// going to the bottom left one
+	// Fills the empty spots in the grid with normal tiles starting from the bottom left tile
+	// going to the top right from bottom to top
 	for (int32 x = 0; x < EdgeGridSize; x++)
 	{
 		for (int32 y = 0; y < EdgeGridSize; y++)
 		{
 			if (TileGrid[x][y] == nullptr)
 			{
-				FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
-				ATile* Tile = GetWorld()->SpawnActor<ATile>(NormalTileBP, SpawnLocation, FRotator::ZeroRotator);
-				TileGrid[x][y] = Tile;
-				Tile->StoreTileGridPosition(x, y);
-#if WITH_DEBUG
-				Tile->SetRenderText(x, y);
-#endif
+				SpawnColoredTile(NormalTileBP, x, y);
 			}
 		}
 	}
@@ -289,9 +297,9 @@ void ARgsTileGameMode::ShowColoredTiles()
 {
 	for (int i = 0; i < EdgeGridSize; i++)
 	{
-		for (int ii = 0; ii < EdgeGridSize; ii++)
+		for (int j = 0; j < EdgeGridSize; j++)
 		{
-			TileGrid[i][ii]->ShowTileColor(true);
+			TileGrid[i][j]->ShowTileColor(true);
 		}
 	}
 }
@@ -304,30 +312,29 @@ void ARgsTileGameMode::SpawnGreenTiles()
 		return;
 	}
 
-	for (int32 i = GreenTilesToSpawn; i > 0; i--)
+	constexpr int32 MaxAttempts = 10;
+	int32 Attempts = 0;
+	for (int32 i = 0; i < GreenTilesToSpawn && Attempts < MaxAttempts && RandomGridIndexes.Num() != 0; i++)
 	{
-		int32 x = FMath::RandRange(0, EdgeGridSize - 1);
-		int32 y = FMath::RandRange(0, EdgeGridSize - 1);
+		int32 GridIndex = RandomGridIndexes.Pop();
+		int32 y = GridIndex / EdgeGridSize;
+		int32 x = GridIndex % EdgeGridSize;
 
-
-		if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y) && IsTileReachable(x, y))
+		if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y) /*&& IsTileReachable(x, y)*/)
 		{
-		
-			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
-			ATile* Tile = GetWorld()->SpawnActor<ATile>(GreenTileBP, SpawnLocation, FRotator::ZeroRotator);
-			TileGrid[x][y] = Tile;
+			ATile* Tile = SpawnColoredTile(GreenTileBP, x, y);
 			GreenTilesArray.Add(Tile);
-			Tile->StoreTileGridPosition(x, y);
-
-#if WITH_DEBUG
-			Tile->SetRenderText(x, y);
-#endif
-
 		}
 		else
 		{
-			i++;
+			i--;
+			Attempts ++;
 		}
+	}
+
+	if(Attempts == MaxAttempts)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Reached max attempts while try to spawn Green Tiles"));
 	}
 }					   
 
@@ -339,39 +346,51 @@ void ARgsTileGameMode::SpawnBlueTile()
 		return;
 	}
 
-	if (!BlueTileBP)
-	{
-		UE_LOG(LogTemp, Error, TEXT("BlueTileBP is not set in blueprint"));
-		return;
-	}
-
-
-	int32 NAttempts = 10;
+	const int32 MaxAttempts = 3;
+	int32 Attempts = 0;
 	bool bBlueTileSpawned = false;
-	while (NAttempts > 0 && !bBlueTileSpawned)
+	
+	while (Attempts < MaxAttempts && !bBlueTileSpawned && RandomGridIndexes.Num() != 0)
 	{
-		int32 x = FMath::RandRange(0, EdgeGridSize - 1);
-		int32 y = FMath::RandRange(0, EdgeGridSize - 1);
-
-		if (!TileGrid[x][y] && IsNotStartTile(x, y) && IsTileReachable(x, y))
+		const int32 GridIndex = RandomGridIndexes.Pop();
+		int32 y = GridIndex / EdgeGridSize;
+		int32 x = GridIndex % EdgeGridSize;
+	
+		if (!TileGrid[x][y] && IsNotStartTile(x, y) /*IsTileReachable(x, y)*/)
 		{
-		
-				FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
-				ATile* Tile = GetWorld()->SpawnActor<ATile>(BlueTileBP, SpawnLocation, FRotator::ZeroRotator);
-				TileGrid[x][y] = Tile;
-				Tile->StoreTileGridPosition(x, y);
-				bBlueTileSpawned = true;
-
-#if WITH_DEBUG
-				Tile->SetRenderText(x, y);
-#endif
+			bBlueTileSpawned = SpawnColoredTile(BlueTileBP, x, y) != nullptr;
 		}
 		else
 		{
-			NAttempts --;
+			Attempts ++;
 		}
-
 	}
+	
+	if(!bBlueTileSpawned)
+	{
+		UE_LOG(LogTemp, Error, TEXT("It was not possible to spawn the blue tile in the correct position"));
+	}
+	
+}
+
+
+ATile* ARgsTileGameMode::SpawnColoredTile(const TSubclassOf<ATile> ColoredTileClass, const int32 InX, const int32 InY)
+{
+	if (!ColoredTileClass)
+	{
+		UE_LOG(LogTemp, Error, TEXT("The subclasset you specified is not valid or wasn't set in the blueprint"));
+		return nullptr;
+	}
+	
+	FVector SpawnLocation = Get3DSpaceTileLocation(InX, InY);
+	ATile* Tile = GetWorld()->SpawnActor<ATile>(ColoredTileClass, SpawnLocation, FRotator::ZeroRotator);
+	TileGrid[InX][InY] = Tile;
+	Tile->StoreTileGridPosition(InX, InY);
+
+#if WITH_DEBUG
+	Tile->SetRenderText(InX, InY);
+#endif
+	return Tile;
 }
 
 void ARgsTileGameMode::SpawnRedTiles()
@@ -382,30 +401,27 @@ void ARgsTileGameMode::SpawnRedTiles()
 		return;
 	}
 
+	if(RandomGridIndexes.Num() < RedTilesToSpawn)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Random available indexes for spawning colored tiles are less than the one needed"));
+		return;
+	}
+
 	for (int32 i = RedTilesToSpawn; i > 0; i--)
 	{
-	   int32 x = FMath::RandRange(0, EdgeGridSize - 1);
-	   int32 y = FMath::RandRange(0, EdgeGridSize - 1);
-
-	  
+	   int32 GridIndex = RandomGridIndexes.Pop();
+	   int32 y = GridIndex / EdgeGridSize;
+	   int32 x = GridIndex % EdgeGridSize;
 	   if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y))
 	   {
-			FVector SpawnLocation = Get3DSpaceTileLocation(x, y);
-			ATile* Tile = GetWorld()->SpawnActor<ATile>(RedTileBP, SpawnLocation, FRotator::ZeroRotator);
-			TileGrid[x][y] = Tile;
-			RedTilesArray.Add(Tile);
-			
-			Tile->StoreTileGridPosition(x, y);
-#if WITH_DEBUG
-			Tile->SetRenderText(x, y);
-#endif
-	   }
-	   else 
-	   {
-		   i++;
+	   		ATile* Tile = SpawnColoredTile(RedTileBP, x, y);
+	   		RedTilesArray.Add(Tile);
 	   }
 	}
 }
+
+
+
 
 #pragma endregion 
 
