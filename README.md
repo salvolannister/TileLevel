@@ -1,29 +1,31 @@
 # TileLevel
 
-Mini Game in Unreal where a player has to move aorund a map and interact with the tiles where he/she is walking in
+Mini Game in Unreal where a player has to move around a map and interact with the tiles where he/she is walking in
 
 # Requirements
 
-
-- [Additional] There should be some BP rules that constrain red tiles to be a certain number that doesn't prevent player win (there is no path for the player to win)
-
-
+- Change the implementation of the spawning tile
+- Change hard text references 
+- Improve the UI interaction between BP and code 
+- <b>[Additional]</b> There should be some BP rules that constrain red tiles to be a certain number that doesn't prevent player win (there is no path for the player to win)
 - [Additional] Add effect on tile Green StepOn: green tile should tremble and after should show stars and later green color
-
 - [Additional] Add sounds 
-
-- [Additional] Try to understand that calling the interface in this way is a bad idea
 
 # Currently working on
 
+# RGSTileGameMode
 
+- Has the purpose to create the tile grid and set up the info about the tile collected 
+- GetClosestTileDistance is the method used to calculate the position closest position for the red and green tiles.
+I consider a tile on the diagonal to be at distance 2 since it will require the player to move one time both in x and y dimensions.
+- 
 
 # Doubts
 
 - ask someone if the implementation of the HUD half in the BP and half in cpp is a red flag or is ok:
-  I did this because it was implemented already in the blueprint but I wanted to add an animation and the faster way I knew to do it
+  I did this because it was implemented already in the blueprint, but I wanted to add an animation and the faster way I knew to do it
   was using cpp 
---> ANSWER: just tell them that since it was already half implemeted and was a test you left it there but for production you would have move everything inside cpp
+--> ANSWER: just tell them that since it was already half implemented and was a test you left it there but for production you would have move everything inside cpp
 
 - Reloading the scene was already in the code base, but it kinda feels very bad for optimization. Should I remove it?
 
@@ -53,12 +55,12 @@ Mini Game in Unreal where a player has to move aorund a map and interact with th
 - Use C++ inheritance to handle ATiles
 - Generate grid reading input from TileGameModeBP
 - Add comments to methods and check naming conventions
-- add In to varibale that are not modified and passed by refererence
+- add In to variable that are not modified and passed by reference
 - add const to every parameter that is not intended to be modified
 - add comment about return expected type where you pass null
 - stop input when game is over
 - [Additional] Add tile that turns blu and its behaviour
 - refactor the tick function in gamemode
-- improve certain methods that now gets called continously
-- [Additional] Add effect on tile StepOn: red tile shoud tremble, then show smoke and at the end show a red color
+- improve certain methods that now gets called continuously
+- [Additional] Add effect on tile StepOn: red tile should tremble, then show smoke and at the end show a red color
  
