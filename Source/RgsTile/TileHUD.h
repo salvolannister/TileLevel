@@ -19,7 +19,7 @@ class RGSTILE_API ATileHUD : public AHUD
 
 public:
 
-	// Adds end screen to viewport, implemented in TileGameHud blueprint
+	// Adds Endscreen to viewport, implemented in TileGameHud blueprint
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
 	void ShowEndScreen();
 

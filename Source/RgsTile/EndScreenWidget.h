@@ -13,7 +13,7 @@ class UText;
 /**
  * Manages open and close for the EndScreen panel blueprint
  * with animations and title updates.
- * Meanwhile the Update of the number of green tiles and red tiles collected texts
+ * Meanwhile, the Update of the number of green tiles and red tiles collected texts
  * is made inside the blueprint
  */
 UCLASS(BlueprintType, Blueprintable, meta = (DisableNativeTick))

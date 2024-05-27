@@ -35,11 +35,9 @@ void ATileHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UWorld* const World = GetWorld();
-	if (World)
+	if (const UWorld* World = GetWorld())
 	{
-		AGameModeBase* const Game = World->GetAuthGameMode();
-		if (Game)
+		if (AGameModeBase* Game = World->GetAuthGameMode())
 		{
 			ARgsTileGameMode* TileGameMode = Cast<ARgsTileGameMode>(Game);;
 			if (TileGameMode)
@@ -53,12 +51,10 @@ void ATileHUD::BeginPlay()
 void ATileHUD::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-	
-	UWorld* const World = GetWorld();
-	if (World)
+
+	if (const UWorld*  World = GetWorld())
 	{
-		AGameModeBase* const Game = World->GetAuthGameMode();
-		if (Game)
+		if (AGameModeBase* Game = World->GetAuthGameMode())
 		{
 			ARgsTileGameMode* TileGameMode = Cast<ARgsTileGameMode>(Game);;
 			if (TileGameMode)
