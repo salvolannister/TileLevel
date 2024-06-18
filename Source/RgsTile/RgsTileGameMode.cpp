@@ -81,6 +81,7 @@ void ARgsTileGameMode::OnPlayerMoveOnTile(ATile* InTile)
 	if (InTile == nullptr)
 	{
 		EndGame(false, true);
+		return;
 	}
 
 	if (CurrentPlayerTile && InTile != CurrentPlayerTile)
@@ -136,6 +137,7 @@ void ARgsTileGameMode::EndGame(bool bIsWin, bool bForceRestart)
 	if (bForceRestart)
 	{
 		ResetGame();
+		return;
 	}
 	
 	SetPlayerInputModeToUIOnly(true);
