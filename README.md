@@ -20,7 +20,7 @@ Welcome to the **3D Minesweeper Adventure** repository! This project showcases m
 </a>
 
 ### GIF Preview
-<img src="path/to/your/video-preview.gif" alt="Tile Game Preview" width="400"/>
+<img src="Images/TileGameGif.gif" alt="Tile Game Preview" width="400"/>
 
 ## Requirements
 
