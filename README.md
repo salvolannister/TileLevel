@@ -5,7 +5,7 @@
 Welcome to the **3D Minesweeper Adventure** repository! This project showcases my abilities with Unreal Engine 5 by bringing a new twist to the classic Minesweeper game. In this 3D version, players navigate a grid to collect green tiles, avoid red ones, and uncover the blue tile that reveal the position of the green tiles in the grid, helping them complete the game faster.
 
 ### Key Features
-- **3D Environment**: Explore the Minesweeper grid in an immersive 3D space.
+- **3D Randomly generated Environment**: Explore the Minesweeper grid in an immersive 3D space.
 - **Collectible Tiles**: Strategically collect green tiles to score points.
 - **Hazardous Tiles**: Avoid red tiles that can end the game.
 - **Reveal Mechanic**: Find blue tiles to reveal the grid and plan your moves.
