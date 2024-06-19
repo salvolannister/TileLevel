@@ -16,7 +16,7 @@ Welcome to the **3D Minesweeper Adventure** repository! This project showcases m
 
 ### YouTube Video
 <a href="https://www.youtube.com/watch?v=XiqYCUsPEJI" target="_blank">
-  <img src="https://img.youtube.com/vi/XiqYCUsPEJI/maxresdefault.jpg" alt="Tile Game video" width="400"/>
+  <img src="https://img.youtube.com/vi/XiqYCUsPEJI/maxresdefault.jpg" alt="Tile Game video" width="400" style="padding: 10px; border: 1px solid #ddd;"/>
 </a>
 
 ### GIF Preview
