@@ -1,13 +1,28 @@
-# TileLevel
+# 3D Minesweeper Adventure
 
-Mini Game in Unreal where a player has to move around a map and interact with the tiles where he/she is walking in
+## Introduction
+
+Welcome to the **3D Minesweeper Adventure** repository! This project showcases my abilities with Unreal Engine 5 by bringing a new twist to the classic Minesweeper game. In this 3D version, players navigate a grid to collect green tiles, avoid red ones, and uncover the blue tile that reveal the position of the green tiles in the grid, helping them complete the game faster.
+
+### Key Features
+- **3D Environment**: Explore the Minesweeper grid in an immersive 3D space.
+- **Collectible Tiles**: Strategically collect green tiles to score points.
+- **Hazardous Tiles**: Avoid red tiles that can end the game.
+- **Reveal Mechanic**: Find blue tiles to reveal the grid and plan your moves.
+
+### Technologies Used
+- **Unreal Engine 5**: Utilized for creating a visually stunning and interactive 3D environment.
+- **Blueprints and C++**: Combined for game logic and mechanics.
 
 ### YouTube Video
 <a href="https://www.youtube.com/watch?v=XiqYCUsPEJI" target="_blank">
-  <img src="https://img.youtube.com/vi/XiqYCUsPEJI/maxresdefault.jpg" alt="Watch the video" width="400"/>
+  <img src="https://img.youtube.com/vi/XiqYCUsPEJI/maxresdefault.jpg" alt="Tile Game video" width="400"/>
 </a>
 
-# Requirements
+### GIF Preview
+<img src="path/to/your/video-preview.gif" alt="Tile Game Preview" width="400"/>
+
+## Requirements
 
 - Change hard text references 
 - Improve the UI interaction between BP and code 
@@ -15,8 +30,8 @@ Mini Game in Unreal where a player has to move around a map and interact with th
 - [Additional] Add effect on tile Green StepOn: green tile should tremble and after should show stars and later green color
 - [Additional] Add sounds 
 
-# Currently working on
-XiqYCUsPEJI
+## Currently working on
+
 # RGSTileGameMode
 
 - Has the purpose to create the tile grid and set up the info about the tile collected 
@@ -43,28 +58,6 @@ I consider a tile on the diagonal to be at distance 2 since it will require the 
 	}
 
 # Resources
-
-# Done
-
-- The game should be reset immediately if the player falls off the platform
-- Call ATileHUD::ShowEndScreen() if player step on all red/green tiles
-- Reset game after about 5 seconds after GameOver() ARgsTileGameMode::ResetGame()
-- Implement all the method from ARgsTileGameMode
-- Adding green tiles using some rules
-- Handle interactions with ATile classes
 - Adding red tiles using similar methods https://www.youtube.com/watch?v=uqylRabVUTo
-- Add tile that turns Red
-- Add tile that turns Green
-- Add tile that turns Silver
-- Use C++ inheritance to handle ATiles
-- Generate grid reading input from TileGameModeBP
-- Add comments to methods and check naming conventions
-- add In to variable that are not modified and passed by reference
-- add const to every parameter that is not intended to be modified
-- add comment about return expected type where you pass null
-- stop input when game is over
-- [Additional] Add tile that turns blu and its behaviour
-- refactor the tick function in gamemode
-- improve certain methods that now gets called continuously
-- [Additional] Add effect on tile StepOn: red tile should tremble, then show smoke and at the end show a red color
+
  
