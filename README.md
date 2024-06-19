@@ -2,9 +2,13 @@
 
 Mini Game in Unreal where a player has to move around a map and interact with the tiles where he/she is walking in
 
+### YouTube Video
+<a href="https://www.youtube.com/watch?v=XiqYCUsPEJI" target="_blank">
+  <img src="https://img.youtube.com/vi/XiqYCUsPEJI/maxresdefault.jpg" alt="Watch the video" width="400"/>
+</a>
+
 # Requirements
 
-- Change the implementation of the spawning tile
 - Change hard text references 
 - Improve the UI interaction between BP and code 
 - <b>[Additional]</b> There should be some BP rules that constrain red tiles to be a certain number that doesn't prevent player win (there is no path for the player to win)
@@ -12,7 +16,7 @@ Mini Game in Unreal where a player has to move around a map and interact with th
 - [Additional] Add sounds 
 
 # Currently working on
-
+XiqYCUsPEJI
 # RGSTileGameMode
 
 - Has the purpose to create the tile grid and set up the info about the tile collected 
