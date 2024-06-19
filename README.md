@@ -21,6 +21,7 @@ Welcome to the **3D Minesweeper Adventure** repository! This project showcases m
 
 ### GIF Preview
 <img src="Images/TileGameGif.gif" alt="Tile Game Preview" width="400"/>
+
 ## Implementation
 
 ### The tiles
