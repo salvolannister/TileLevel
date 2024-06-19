@@ -21,8 +21,19 @@ Welcome to the **3D Minesweeper Adventure** repository! This project showcases m
 
 ### GIF Preview
 <img src="Images/TileGameGif.gif" alt="Tile Game Preview" width="400"/>
+## Implementation
 
-## Requirements
+### The tiles
+
+The game contains four kind of tiles, all represented by a class ARedTiles.cs, AGreenTile.cs, ABlueTile.cs and ANormalTile.cs all derived by a base class ATile.cs and all bound to a correspondant blueprint.
+I decided to implement the tiles starting from a common base class since they share common behaviours, this helps avoiding code repetition and fasten the creation of new ATile classes.
+
+### The randomly generated environment
+
+
+### The UI
+
+## To Do
 
 - Change hard text references 
 - Improve the UI interaction between BP and code 
@@ -31,13 +42,6 @@ Welcome to the **3D Minesweeper Adventure** repository! This project showcases m
 - [Additional] Add sounds 
 
 ## Currently working on
-
-# RGSTileGameMode
-
-- Has the purpose to create the tile grid and set up the info about the tile collected 
-- GetClosestTileDistance is the method used to calculate the position closest position for the red and green tiles.
-I consider a tile on the diagonal to be at distance 2 since it will require the player to move one time both in x and y dimensions.
-- 
 
 # Doubts
 
