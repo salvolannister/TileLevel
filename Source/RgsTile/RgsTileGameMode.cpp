@@ -176,34 +176,34 @@ void ARgsTileGameMode::SetPlayerInputModeToUIOnly(bool bUIOnly)
 
 #pragma endregion
 
-int32 ARgsTileGameMode::GetTotalGreenTiles()
+int32 ARgsTileGameMode::GetTotalGreenTiles() const
 {
 	return GreenTilesToSpawn;
 }
 
-int32 ARgsTileGameMode::GetGreenTilesFound()
+int32 ARgsTileGameMode::GetGreenTilesFound() const
 {
 	return GreenTilesFound;
 }
 
-int32 ARgsTileGameMode::GetTotalRedTiles()
+int32 ARgsTileGameMode::GetTotalRedTiles() const
 {
 	return RedTilesToSpawn;
 }
 
-int32 ARgsTileGameMode::GetRedTilesFound()
+int32 ARgsTileGameMode::GetRedTilesFound() const
 {
 	return RedTilesFound;
 }
 
 #pragma region Tiles Distances
-int32 ARgsTileGameMode::GetClosestGreenTileDistance()
+int32 ARgsTileGameMode::GetClosestGreenTileDistance() const
 {
 
 	return GetClosestTileDistance(CurrentPlayerTile->TilePosX, CurrentPlayerTile->TilePosY, GreenTilesArray);
 }
 
-int32 ARgsTileGameMode::GetClosestRedTileDistance()
+int32 ARgsTileGameMode::GetClosestRedTileDistance() const
 {
 	return GetClosestTileDistance(CurrentPlayerTile->TilePosX, CurrentPlayerTile->TilePosY, RedTilesArray);
 }

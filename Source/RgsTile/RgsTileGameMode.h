@@ -30,33 +30,33 @@ public:
 
 	// Returns the total number of Green Tiles in the tile grid.
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Game)
-	int32 GetTotalGreenTiles();
+	int32 GetTotalGreenTiles() const;
 
 	// Returns the number of Green Tiles that the player found.
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Game)
-	int32 GetGreenTilesFound();
+	int32 GetGreenTilesFound() const;
 
 	// Returns the total number of Red Tiles in the tile grid.
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Game)
-	int32 GetTotalRedTiles();
+	int32 GetTotalRedTiles() const;
 
 	// Returns the number of Red Tiles that the player found.
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Game)
-	int32 GetRedTilesFound();
+	int32 GetRedTilesFound() const;
 
 	// Returns the distance from the player to the closest Green Tile (that the player has not found yet).
 	// Returns -1 if all Green Tiles have been found.
 	// Distance is defined as the number of tiles that the player has to move (horizontally and vertically)
 	// to reach the closest Green Tile.
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Game)
-	int32 GetClosestGreenTileDistance();
+	int32 GetClosestGreenTileDistance() const;
 
 	// Returns the distance from the player to the closest Red Tile (that the player has not found yet).
 	// Returns -1 if all Red Tiles have been found.
 	// Distance is defined as the number of tiles that the player has to move (horizontally and vertically)
 	// to reach the closest Red Tile.
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Game)
-	int32 GetClosestRedTileDistance();
+	int32 GetClosestRedTileDistance() const;
 
 	/** The blueprint class to be instantiated for the green tile. Set this in the game mode blueprint	*/
 	UPROPERTY(EditAnywhere, Category = "Tiles")
