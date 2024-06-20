@@ -44,6 +44,18 @@ To overcome these issues, we can use a more robust method. In the RgsPlayGameMod
 
 This method ensures a well-distributed randomization of tile positions, improving both performance and game replayability.
 
+### Gameplay
+
+For this type of game, the initial instinct to determine which tile the player is on might be to use physics. However, using raycasting and collision detection can be very resource-intensive.
+Instead, I developed a method to find the tile position based on the player's position, the location of the tile grid center, the edge dimensions of the grid, and the size of each sector. The formula is as follows:
+
+```cpp
+FVector TmpPosition = (Position - TilesGridCenterPosition) / SectorSize + EdgeGridSize;
+return FVector2D(FMath::RoundToInt(TmpPosition.X), FMath::RoundToInt(TmpPosition.Y));
+```
+
+This approach calculates the tile position efficiently, bypassing the need for heavy physics calculations.
+
 ### The UI
 
 ## To Do
