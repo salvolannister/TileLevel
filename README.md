@@ -26,11 +26,23 @@ Welcome to the **3D Minesweeper Adventure** repository! This project showcases m
 
 ### The tiles
 
-The game contains four kind of tiles, all represented by a class ARedTiles.cs, AGreenTile.cs, ABlueTile.cs and ANormalTile.cs all derived by a base class ATile.cs and all bound to a correspondant blueprint.
-I decided to implement the tiles starting from a common base class since they share common behaviours, this helps avoiding code repetition and fasten the creation of new ATile classes.
+The game includes four types of tiles, each represented by a class: `ARedTile.cpp`, `AGreenTile.cpp`, `ABlueTile.cpp`, and `ANormalTile.cpp`. These classes all derive from a common base class, `ATile.cpp`, and are each linked to a corresponding blueprint. 
+Implementing the tiles with a shared base class allows for common behaviors to be centralized, reducing code repetition and speeding up the creation of new `ATile` subclasses.
 
 ### The randomly generated environment
 
+To create a randomly generated environment and ensure that colored tiles are placed differently each time the game is replayed, we need an effective randomization method to enhance game replayability. A naive approach might involve selecting a random index within the range [0, TotalTiles - 1] each time we need a colored tile. However, this method has several drawbacks:
+
+- It doesn't guarantee the table is created in a determinate amount of time (we might repeatedly select an already-used index).
+- Checking if an index has already been used consumes additional time.
+- It might result in a weak randomization.
+
+To overcome these issues, we can use a more robust method. In the RgsPlayGameMode.cpp class, we first create an array of indices where each cell contains its respective position number. We then shuffle the array using a for loop:
+
+- We select a random index between the current loop index "i" and the total count of tiles.
+- We swap the elements at array[i] and array[random_index].
+
+This method ensures a well-distributed randomization of tile positions, improving both performance and game replayability.
 
 ### The UI
 
