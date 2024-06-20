@@ -54,7 +54,7 @@ FVector TmpPosition = (Position - TilesGridCenterPosition) / SectorSize + EdgeGr
 return FVector2D(FMath::RoundToInt(TmpPosition.X), FMath::RoundToInt(TmpPosition.Y));
 ```
 
-This approach calculates the tile position efficiently, bypassing the need for heavy physics calculations.
+This approach calculates the tile position efficiently based on how the grid was generated, bypassing the need for heavy physics calculations.
 
 ### The UI
 
