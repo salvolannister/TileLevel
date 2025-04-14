@@ -253,9 +253,9 @@ void ARgsTileGameMode::SpawnTileGrid()
 		return;
 
 	TileGrid.SetNum(EdgeGridSize);
-	for (int32 i = 0; i < EdgeGridSize; ++i)
+	for (TArray<TObjectPtr<ATile>>& Row : TileGrid)
 	{
-		TileGrid[i].SetNumZeroed(EdgeGridSize);
+		Row.SetNumZeroed(EdgeGridSize);
 	}
 	
 	const int32 TotalTiles = EdgeGridSize*EdgeGridSize;
@@ -266,6 +266,7 @@ void ARgsTileGameMode::SpawnTileGrid()
 		RandomGridIndexes.Add(i);
 	}
 
+	//TODO: No need to go over all the vector. We just need to swap the first TotalTilesElements to spwan
 	for(int i = 0; i < RandomGridIndexes.Num(); i++)
 	{
 		const int32 RandIndex = FMath::RandRange(i, TotalTiles - 1);
@@ -322,7 +323,7 @@ void ARgsTileGameMode::SpawnGreenTiles()
 		int32 y = GridIndex / EdgeGridSize;
 		int32 x = GridIndex % EdgeGridSize;
 
-		if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y) /*&& IsTileReachable(x, y)*/)
+		if (TileGrid[x][y] == nullptr && IsNotStartTile(x, y))
 		{
 			ATile* Tile = SpawnColoredTile(GreenTileBP, x, y);
 			GreenTilesArray.Add(Tile);
@@ -348,7 +349,7 @@ void ARgsTileGameMode::SpawnBlueTile()
 		return;
 	}
 
-	const int32 MaxAttempts = 3;
+	constexpr int32 MaxAttempts = 3;
 	int32 Attempts = 0;
 	bool bBlueTileSpawned = false;
 	
@@ -358,7 +359,7 @@ void ARgsTileGameMode::SpawnBlueTile()
 		int32 y = GridIndex / EdgeGridSize;
 		int32 x = GridIndex % EdgeGridSize;
 	
-		if (!TileGrid[x][y] && IsNotStartTile(x, y) /*IsTileReachable(x, y)*/)
+		if (!TileGrid[x][y] && IsNotStartTile(x, y))
 		{
 			bBlueTileSpawned = SpawnColoredTile(BlueTileBP, x, y) != nullptr;
 		}
@@ -383,8 +384,8 @@ ATile* ARgsTileGameMode::SpawnColoredTile(const TSubclassOf<ATile> ColoredTileCl
 		UE_LOG(LogTemp, Error, TEXT("The subclasset you specified is not valid or wasn't set in the blueprint"));
 		return nullptr;
 	}
-	
-	FVector SpawnLocation = Get3DSpaceTileLocation(InX, InY);
+
+	const FVector SpawnLocation = Get3DSpaceTileLocation(InX, InY);
 	ATile* Tile = GetWorld()->SpawnActor<ATile>(ColoredTileClass, SpawnLocation, FRotator::ZeroRotator);
 	TileGrid[InX][InY] = Tile;
 	Tile->StoreTileGridPosition(InX, InY);
@@ -428,32 +429,6 @@ void ARgsTileGameMode::SpawnRedTiles()
 #pragma endregion 
 
 #pragma region Tiles Coordinates
-bool ARgsTileGameMode::IsTileReachable(const int32 X, const int32 Y) const
-{
-	// Looks if there is at least one tile that can lead to the green Tile without pressing a red tile
-    int32 SafeTileNumber = 0;
-
-	auto IsTileSafeToCross = [&](int32 x, int32 y) -> bool
-	{
-		if (TileGrid.IsValidIndex(x) && TileGrid[x].IsValidIndex(y))
-		{
-			return (TileGrid[x][y] == nullptr || TileGrid[x][y].IsA(RedTileBP));
-		}
-
-		return false;
-	};
-
-	if(IsTileSafeToCross(X + 1, Y) || IsTileSafeToCross(X - 1, Y) ||
-		IsTileSafeToCross(X, Y + 1) || IsTileSafeToCross(X, Y -1))
-	{
-		SafeTileNumber++;
-	}
-
-
-
-
-	return SafeTileNumber > 0;
-}
 
 FVector ARgsTileGameMode::Get3DSpaceTileLocation(const int32 X, const int32 Y) const 
 {
@@ -535,12 +510,7 @@ void ARgsTileGameMode::RevealGreenTiles(bool bReveal)
 
 bool ARgsTileGameMode::IsNotStartTile(const int32 X, const int32 Y) const
 {
-	
-	if (X != StartTileCoordinates.X || Y != StartTileCoordinates.Y)
-		return true;
-	else
-		return false;
-
+	return (X != StartTileCoordinates.X || Y != StartTileCoordinates.Y);
 }
 
 

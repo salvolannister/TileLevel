@@ -9,9 +9,10 @@ Welcome to the **3D Minesweeper Adventure** repository! This project showcases m
 - **Collectible Tiles**: Strategically collect green tiles to score points.
 - **Hazardous Tiles**: Avoid red tiles that can end the game.
 - **Reveal Mechanic**: Find blue tiles to reveal the grid and plan your moves.
+- **Interesting configuration file**: .h containing programming guards to hide/show debug prints/feature
 
 ### Technologies Used
-- **Unreal Engine 5**: Utilized for creating a visually stunning and interactive 3D environment.
+- **Unreal Engine 5.3**: Utilized for creating a visually stunning and interactive 3D environment.
 - **Blueprints and C++**: Combined for game logic and mechanics.
 
 ### YouTube Video
@@ -36,6 +37,7 @@ To create a randomly generated environment and ensure that colored tiles are pla
 - It doesn't guarantee the table is created in a determinate amount of time (we might repeatedly select an already-used index).
 - Checking if an index has already been used consumes additional time.
 - It might result in a weak randomization.
+- If the number of the special tiles are very close to the number of total tiles it may never end
 
 To overcome these issues, we can use a more robust method. In the RgsPlayGameMode.cpp class, we first create an array of indices where each cell contains its respective position number. We then shuffle the array using a for loop:
 
