@@ -27,6 +27,18 @@ Welcome to the **3D Minesweeper Adventure** repository! This project showcases m
 
 ### The tiles
 
+```mermaid 
+    classDiagram
+    class RgsTile
+    class RedTile
+    class BlueTile
+    class GreenTile
+    
+    RedTile --|> RgsTile
+    GreenTile --|> RgsTile
+    BlueTile --|> RgsTile
+```
+
 The game includes four types of tiles, each represented by a class: `ARedTile.cpp`, `AGreenTile.cpp`, `ABlueTile.cpp`, and `ANormalTile.cpp`. These classes all derive from a common base class, `ATile.cpp`, and are each linked to a corresponding blueprint. 
 Implementing the tiles with a shared base class allows for common behaviors to be centralized, reducing code repetition and speeding up the creation of new `ATile` subclasses.
 
@@ -67,6 +79,7 @@ This approach calculates the tile position efficiently based on how the grid was
 - <b>[Additional]</b> There should be some BP rules that constrain red tiles to be a certain number that doesn't prevent player win (there is no path for the player to win)
 - [Additional] Add effect on tile Green StepOn: green tile should tremble and after should show stars and later green color
 - [Additional] Add sounds 
+- Choose start Tile at the end, not at the beginning 
 
 ## Currently working on
 
